@@ -75,7 +75,7 @@ class Species(Ecosystem):
     def __init__(self, name, interactions):
         """
         This method creates the dictionary specifying the interaction of
-        this species with respect to all the others, and updates the 
+        this species with respect to all the others, and then updates the 
         informations stored in the Ecosystem.
         """
         
@@ -89,17 +89,36 @@ class Species(Ecosystem):
     
             self.interactions = {}
     
-            for i, j in zip(self.species_list, range(len(self.species_list))):
+            for i, j in zip(Ecosystem.species_list, range(len(Ecosystem.species_list))):
                 self.interactions[(name, i)] = interactions[j]
     
             Ecosystem.intMatrix.update(self.interactions)
     
-
+    def __del__(self):
+        """
+        This method removes the name from the list of the species and all the
+        interactions in which it was involved, stored in the Ecosystem.
+        """
+        
+        Ecosystem.species_list.remove(self.name)
+        
+        key_blacklist =[]
+        for key in Ecosystem.intMatrix.keys():
+            if (self.name in key):
+                key_blacklist.append(key)
+        for key in key_blacklist:
+            Ecosystem.intMatrix.pop(key)
             
         
 #%%     
         
 
+        
+        
+        
+        
+        
+        
         
         
         

@@ -48,7 +48,7 @@ The set of equations can be written
 The equation form is analogous to that of the simpler model.
 θ(k) is the Heaviside function, defined as
 
-θ(k) = 1    if    k > 0 <\br>
+θ(k) = 1    if    k > 0  
 θ(k) = 0    if    k < 0
 
 and it assures that the limited growth is applied only to preys, while predators have and no other limit in growth than the presence of preys. 

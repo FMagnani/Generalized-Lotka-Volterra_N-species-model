@@ -10,6 +10,10 @@ import logging
 
 #%%
 
+SPECIES_PARS = 4
+
+#%%
+
 class Ecosystem:
     """
     Ecosystem()
@@ -97,6 +101,9 @@ class Species(Ecosystem):
         if (len(interactions) > other_species+1):
             raise ValueError("""The length of 'interactions' should be equal to the number of total species +1.""")
 
+        if (len(pars) > SPECIES_PARS):
+            raise ValueError('The length of "pars" should be equal to {}'.format(SPECIES_PARS))
+
 
         else:
             
@@ -104,6 +111,11 @@ class Species(Ecosystem):
                  logging.warning("""The length of 'interactions' should be equal to the number of total species +1. The missing value will be set to 0.""")
             
                  interactions = pad_list(interactions, other_species+1)
+        
+             if (len(interactions) < other_species+1):
+                 logging.warning('The length of "pars" should be equal to {}. The missing value will be set to 0.'.format(SPECIES_PARS))
+            
+                 interactions = pad_list(pars, SPECIES_PARS)
         
              self.name = name
          

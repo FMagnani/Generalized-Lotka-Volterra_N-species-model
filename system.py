@@ -152,11 +152,11 @@ class Species(Ecosystem):
                  pars = pad_list(pars, SPECIES_PARS, 0.5)
         
              if (pars[0] < 0):
-                raise ValueError("The first parameter of 'pars' is the initial population number. Must be greater than 0.")
+                  raise ValueError("The first parameter of 'pars' is the initial population number. Must be greater than 0.")
 
-             if (pars[3] == 0):
-                logging.warning("Sign of pars[3] has been changed. It should be positive. See documentation of class 'Species' for further explanations.")
-                pars[3] = -1*pars[3]
+             if (pars[3] < 0):
+                  logging.warning("Sign of pars[3] has been changed. It should be positive. See documentation of class 'Species' for further explanations.")
+                  pars[3] = -1*pars[3]
 
         
              self.name = name
@@ -210,6 +210,7 @@ class Prey(Species):
     See also
     --------
     Species
+    Predator
     
     """
     
@@ -217,18 +218,54 @@ class Prey(Species):
     
         if (pars[1] < 0):
            logging.warning("Sign of pars[1] has been changed. It should be positive for preys. See documentation of class 'Species' for further explanations.")
-           pars[1] = -1*pars[1]
+           pars[1] *= -1
         
         if (pars[2] == 0):
             raise ValueError("pars[2] must be strictly positive. See documentation of class 'Species' for further explanations.")
         
-        if (pars[2] == 0):
+        if (pars[2] < 0):
             logging.warning("Sign of pars[2] has been changed. It should be positive. See documentation of class 'Species' for further explanations.")
-            pars[2] = -1*pars[2]
+            pars[2] *= -1
                 
-            
+        for i in range(len(interactions)):
+            if not (interactions[i] < 0):
+                logging.warning("Interaction sign changed. All interactions should be eithr negative or zero for preys.")
+                interactions[i] *= -1    
+                
+        super().__init__(name, interactions, pars)
 
-        super().__init__(self, name, interactions, pars)
+
+class Predator(Species):
+    """
+    This class is meant to be equivalent to the Species class, but with checks
+    on the input parameters in order to help the user not to misunderstand
+    their meaning.
+    
+    See also
+    --------
+    Species
+    Prey
+    
+    """
+    
+    def __init__(self, name, interactions, pars):
+    
+        if (pars[1] < 0):
+           logging.warning("Sign of pars[1] has been changed. It should be negative for predators. See documentation of class 'Species' for further explanations.")
+           pars[1] *= -1
+        
+        if (pars[2] == 0):
+            raise ValueError("pars[2] must be different from zero. See documentation of class 'Species' for further explanations.")
+                
+        for i in range(len(interactions)):
+            if not (interactions[i] > 0):
+                logging.warning("Interaction sign changed. All interactions should be eithr positive or zero for predators.")
+                interactions[i] *= -1    
+                
+        super().__init__(name, interactions, pars)
+
+
+
         
 #%%
 

@@ -97,12 +97,23 @@ def test_SpeciesPars():
 
 
 
+def test_PreyPredatorInput():
+    """
+    Test if the classes Prey and Predators correctly changes the given input.
+    """
+    
+    pred = system.Species('wolf', [], [])
+    prey = system.Prey('rabbit', [5], [1,-1,-1,-1])
+    
+    assert system.Ecosystem.intMatrix == { ('rabbit', 'wolf') : -5 }
+    assert prey.pars == {'rabbit' : [1,1,1,1]}
 
-
-
-
-
-
+    del pred
+    
+    pred = system.Predator('wolf', [0], [1,-1,-1,-1])
+    
+    assert system.Ecosystem.intMatrix == { ('wolf', 'rabbit') : 0 }
+    assert pred.pars == {'wolf' : [1,1,-1,1]}
 
 
 

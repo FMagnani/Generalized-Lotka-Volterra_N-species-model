@@ -56,19 +56,18 @@ class Species(Ecosystem):
     name: string
         The name of the Species created. It univocally identifies it.
     
-    interaction: list. Length should be equal to the number of species
-                 already implemented +1. If smaller, it is padded with zeros.
+    interaction: list. 
+        Length should be equal to the number of species already implemented. 
+        If smaller, it is padded with zeros.
         It defines the interaction coefficients of this species with respect
-        to all the others, and with respect to itself. The order is the same
-        as the species list of Ecosystem, and the last value is the 
-        interaction with respect to itself.
+        to all the others. The order is the same as the species list of 
+        Ecosystem.
         
-        So if Ecosystem-species_list = [ 'A', 'B']
-        and species 'C' is created with interactions = [1, 2, 3]
+        So if Ecosystem.species_list = [ 'A', 'B']
+        and species 'C' is created with interactions = [1, 2]
         to the interaction matrix implemented will be added the following:
         {('C','A') : 1,
-         ('C','B') : 2,  
-         ('C','C') : 3}
+         ('C','B') : 2}
         
         Due to theoretical reasons, this values are bounded to very 
         specific ranges and sign.
@@ -124,7 +123,7 @@ class Species(Ecosystem):
         this species with respect to all the others, and then updates the 
         informations stored in the Ecosystem.
         It also check for the correctness of the inputs. 
-        Itventually pads 'interactions' or 'pars' with zeros.
+        Itventually pads 'interactions' or 'pars' with default values.
         """
         
         other_species = len(Ecosystem.species_list)
@@ -133,31 +132,32 @@ class Species(Ecosystem):
             raise TypeError("""Name already existing. Species must have different names.""")
 
 
-        if (len(interactions) > other_species+1):
-            raise ValueError("""The length of 'interactions' should be equal to the number of total species +1.""")
+        if (len(interactions) > other_species):
+            raise ValueError("""The length of 'interactions' should be equal to the number of the other species.""")
 
         if (len(pars) > SPECIES_PARS):
             raise ValueError('The length of "pars" should be equal to {}'.format(SPECIES_PARS))
 
-        if (pars[0] < 0):
-            raise ValueError("The first parameter of 'pars' is the initial population number. Must be greater than 0.")
-
-        if (pars[3] == 0):
-            logging.warning("Sign of pars[3] has been changed. It should be positive. See documentation of class 'Species' for further explanations.")
-            pars[3] = -1*pars[3]
-
 
         else:
             
-             if (len(interactions) < other_species+1):
-                 logging.warning("""The length of 'interactions' should be equal to the number of total species +1. The missing value will be set to 0.""")
+             if (len(interactions) < other_species):
+                 logging.warning("""The length of 'interactions' should be equal to the number of the other species. The missing values will be set to 0.""")
             
-                 interactions = pad_list(interactions, other_species+1)
+                 interactions = pad_list(interactions, other_species, 0)
         
-             if (len(pars) < other_species+1):
-                 logging.warning('The length of "pars" should be equal to {}. The missing value will be set to 0.'.format(SPECIES_PARS))
+             if (len(pars) < SPECIES_PARS):
+                 logging.warning('The length of "pars" should be equal to {}. The missing value will be set to 0.5.'.format(SPECIES_PARS))
             
-                 pars = pad_list(pars, SPECIES_PARS)
+                 pars = pad_list(pars, SPECIES_PARS, 0.5)
+        
+             if (pars[0] < 0):
+                raise ValueError("The first parameter of 'pars' is the initial population number. Must be greater than 0.")
+
+             if (pars[3] == 0):
+                logging.warning("Sign of pars[3] has been changed. It should be positive. See documentation of class 'Species' for further explanations.")
+                pars[3] = -1*pars[3]
+
         
              self.name = name
          
@@ -165,7 +165,7 @@ class Species(Ecosystem):
     
              self.interactions = {}          
              
-             for i, j in zip(Ecosystem.species_list, range(other_species+1)):
+             for i, j in zip(Ecosystem.species_list, range(other_species)):
                  self.interactions[(name, i)] = interactions[j]
                  
              Ecosystem.intMatrix.update(self.interactions)
@@ -232,7 +232,7 @@ class Prey(Species):
         
 #%%
 
-def pad_list(list_to_pad, new_length):
+def pad_list(list_to_pad, new_length, padding_value):
     """
 
     Parameters
@@ -242,6 +242,8 @@ def pad_list(list_to_pad, new_length):
     new_length : int
         Must be greater than the length of list_to_pad. It is the length of
         the returned list.
+    padding_value: float
+        The value used to pad the list.
 
     Returns
     -------
@@ -255,7 +257,7 @@ def pad_list(list_to_pad, new_length):
     missing = new_length - len(list_to_pad)
         
     for i in range(missing):
-        list_to_pad.append(0)
+        list_to_pad.append(padding_value)
             
     return list_to_pad       
         

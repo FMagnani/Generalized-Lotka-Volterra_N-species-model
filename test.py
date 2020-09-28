@@ -3,7 +3,7 @@
 """
 Created on Sat Sep 26 14:24:50 2020
 
-@author: fede
+@author: FMagnani
 """
 
 import system
@@ -12,60 +12,40 @@ from hypothesis import given
 
 
 
-@given(a=st.just(1),b=st.just(2),c=st.just(3), A=st.just('A'),B=st.just('B'))
-def test_speciesCreation(a,b,c,A,B):
+def test_speciesCreation():
     """
     Create two Species and check that Ecosystem is correctly updated.
     """
-    sp1_inter = [a]
-    sp2_inter = [b]
-    sp2_inter.append(c)
-
-    sp1 = system.Species(A, sp1_inter, [])
-    sp2 = system.Species(B, sp2_inter, [])
+    
+    sp1 = system.Species('A', [], [])
+    sp2 = system.Species('B', [2], [])
     
     assert len(sp1.species_list) == len(sp2.species_list)
     assert len(sp1.species_list) == 2
-    assert sp2.species_list == [A,B]
-    assert sp1.intMatrix == {(A,A):1,
-                             (B,A):2,
-                             (B,B):3}
+    assert sp2.species_list == ['A','B']
+    assert sp1.intMatrix == {('B','A'):2}
 
-@given(a=st.just(1),b=st.just(2),c=st.just(3), A=st.just('A'),B=st.just('B'))
-def test_classVsInstanceInformation(a,b,c,A,B):
+def test_classVsInstanceInformation():
     """
     Are the updates visible to all the instances?
     """
-    sp1_inter = [a]
-    sp2_inter = [b]
-    sp2_inter.append(c)
 
-    sp1 = system.Species(A, sp1_inter, [])
-    sp2 = system.Species(B, sp2_inter, [])
+    sp1 = system.Species('A', [], [])
+    sp2 = system.Species('B', [10], [])
     
     assert len(sp1.species_list) == len(system.Ecosystem.species_list)
     assert len(system.Ecosystem.species_list) == 2
-    assert system.Ecosystem.species_list == [A,B]
-    assert system.Ecosystem.intMatrix == {(A,A):1,
-                             (B,A):2,
-                             (B,B):3}
+    assert system.Ecosystem.species_list == ['A','B']
+    assert system.Ecosystem.intMatrix == {('B','A'):10}
 
-#@given(A=st.text(min_size=1, max_size=2), B=st.text(min_size=3, max_size=4))
 def test_speciesDestruction():    
     """
     Create and destroy two species and check that at every step the Ecosystem
     is correctly updated.
     """
-    sp1_inter = [1]
-    sp2_inter = [2]
-    sp2_inter.append(3)
-    sp3_inter = [4]
-    sp3_inter.append(5)
-    sp3_inter.append(6)
-
-    sp1 = system.Species('A', sp1_inter, [])
-    sp2 = system.Species('B', sp2_inter, [])
-    sp3 = system.Species('C', sp3_inter, [])
+    sp1 = system.Species('A', [], [])
+    sp2 = system.Species('B', [], [])
+    sp3 = system.Species('C', [], [])
 
     del sp1
     
@@ -77,7 +57,7 @@ def test_speciesDestruction():
     
     del sp2
     
-    assert system.Ecosystem.intMatrix == {('C','C'):6}
+    assert system.Ecosystem.intMatrix == {}
     assert system.Ecosystem.species_list == ['C']
     for key in system.Ecosystem.intMatrix:
         assert not ('B' in key)
@@ -95,21 +75,21 @@ def test_SpeciesPars():
     correctly. 
     """
     
-    zeros = []
+    default = []
     for i in range(system.SPECIES_PARS):
-        zeros.append(0)
+        default.append(0.5)
     
-    sp1 = system.Species('A', [], [1])
+    sp1 = system.Species('A', [], [])
     sp2 = system.Species('AA', [], [])
     
     assert sp1.species_pars == sp2.species_pars
     assert len(sp1.species_pars.keys()) == 2
     
-    assert sp1.species_pars == { 'A' : [1], 'AA' : zeros }
+    assert sp1.species_pars == { 'A' : default, 'AA' : default }
     
     del sp1
     
-    assert sp2.species_pars == { 'AA' : zeros }
+    assert sp2.species_pars == { 'AA' : default }
     
     del sp2
     

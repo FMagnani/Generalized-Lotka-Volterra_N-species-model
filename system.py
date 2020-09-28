@@ -43,9 +43,9 @@ class Ecosystem:
     
 class Species(Ecosystem):
     """
-    Species(name, interaction)
+    Species(name, interaction, pars)
     
-    Class representing a species, parent of classes Predator and Prey. 
+    Class representing a species. 
     
     ..note:: This class is not supposed to create instances, but to keep 
              updated the Ecosystem. Instances should be created from Predator 
@@ -56,19 +56,54 @@ class Species(Ecosystem):
     name: string
         The name of the Species created. It univocally identifies it.
     
-    interaction: array-like, of length equal to the number of species
-                 already implemented +1
+    interaction: list. Length should be equal to the number of species
+                 already implemented +1. If smaller, it is padded with zeros.
         It defines the interaction coefficients of this species with respect
         to all the others, and with respect to itself. The order is the same
         as the species list of Ecosystem, and the last value is the 
-        ineraction with respect to itself.
+        interaction with respect to itself.
+        
+        So if Ecosystem-species_list = [ 'A', 'B']
+        and species 'C' is created with interactions = [1, 2, 3]
+        to the interaction matrix implemented will be added the following:
+        {('C','A') : 1,
+         ('C','B') : 2,  
+         ('C','C') : 3}
+        
         Due to theoretical reasons, this values are bounded to very 
-        specific ranges and sign, depending on the type of species they 
-        refers to.
-        Nevertheless no control is performed by this class, since it is 
-        delegated to the classes Predator and Prey. No instances of this
-        class are supposed to be created. 
+        specific ranges and sign.
+        In the interaction matrix, a line as
+        ('A','C') : 2
+        means that 'A' beats 'C' ('C' is eaten by 'A'), while
+        ('A','C'): -2
+        means that 'C' eats 'A'.
+        
+        Thus when the list of interactions for a given species is created, 
+        one should ask himself, for interactions[i]: "does this species eat 
+        Ecosystem.species_list(i) (in such a case, a positive value should
+        be inserted), or is this species eaten by Ecosystem.species_list[i]
+        (negative value)?"
+        
+    pars: list. 
+        It is the list of the parameters specific to this species.
+        Length should be equal to 4. If smaller, it is padded with zeros.
+        pars[0]: Initial value for population number (must be >0)
+        pars[1]: growth/death rate (depending on the sign).
+        pars[2]: carrying capacity.*
+        pars[3]: Volterra equivalent number (must be >0).
+        
+        In the equation:
+        
+        dx/dt = (ki xi) - (ki xi xi/Ki) - 1/ci (SUM aij xi xj)
 
+        pars[1] = ki
+        pars[2] = Ki
+        pars[3] = ci
+        
+        See the documentation for further information on the formula.
+        
+        *The carrying capacity is not used by the equations related to
+        predators. It can be set to any number.
         
     See also
     --------
@@ -88,8 +123,8 @@ class Species(Ecosystem):
         This method creates the dictionary specifying the interaction of
         this species with respect to all the others, and then updates the 
         informations stored in the Ecosystem.
-        It also check for the correctness of the inputs eventually padding
-        'interactions' or 'pars' with zeros.
+        It also check for the correctness of the inputs. 
+        Itventually pads 'interactions' or 'pars' with zeros.
         """
         
         other_species = len(Ecosystem.species_list)
@@ -103,6 +138,13 @@ class Species(Ecosystem):
 
         if (len(pars) > SPECIES_PARS):
             raise ValueError('The length of "pars" should be equal to {}'.format(SPECIES_PARS))
+
+        if (pars[0] < 0):
+            raise ValueError("The first parameter of 'pars' is the initial population number. Must be greater than 0.")
+
+        if (pars[3] == 0):
+            logging.warning("Sign of pars[3] has been changed. It should be positive. See documentation of class 'Species' for further explanations.")
+            pars[3] = -1*pars[3]
 
 
         else:
@@ -155,11 +197,41 @@ class Species(Ecosystem):
         for key in key_blacklist:
             Ecosystem.species_pars.pop(key)
                
-       
+ 
 
-#%%
+#%%     
+        
+class Prey(Species):
+    """
+    This class is meant to be equivalent to the Species class, but with checks
+    on the input parameters in order to help the user not to misunderstand
+    their meaning.
+    
+    See also
+    --------
+    Species
+    
+    """
+    
+    def __init__(self, name, interactions, pars):
+    
+        if (pars[1] < 0):
+           logging.warning("Sign of pars[1] has been changed. It should be positive for preys. See documentation of class 'Species' for further explanations.")
+           pars[1] = -1*pars[1]
+        
+        if (pars[2] == 0):
+            raise ValueError("pars[2] must be strictly positive. See documentation of class 'Species' for further explanations.")
+        
+        if (pars[2] == 0):
+            logging.warning("Sign of pars[2] has been changed. It should be positive. See documentation of class 'Species' for further explanations.")
+            pars[2] = -1*pars[2]
+                
             
-   
+
+        super().__init__(self, name, interactions, pars)
+        
+#%%
+
 def pad_list(list_to_pad, new_length):
     """
 
@@ -185,25 +257,7 @@ def pad_list(list_to_pad, new_length):
     for i in range(missing):
         list_to_pad.append(0)
             
-    return list_to_pad
-    
-    
-        
-        
-        
-            
-        
-
-
-#%%     
-        
-class Prey(Species):
-    pass
-
-        
-        
-        
-        
+    return list_to_pad       
         
         
         

@@ -10,7 +10,7 @@ import system
 from hypothesis import strategies as st
 from hypothesis import given
 
-#%%
+
 
 @given(a=st.just(1),b=st.just(2),c=st.just(3), A=st.just('A'),B=st.just('B'))
 def test_speciesCreation(a,b,c,A,B):
@@ -49,7 +49,6 @@ def test_classVsInstanceInformation(a,b,c,A,B):
     assert system.Ecosystem.intMatrix == {(A,A):1,
                              (B,A):2,
                              (B,B):3}
-
 
 #@given(A=st.text(min_size=1, max_size=2), B=st.text(min_size=3, max_size=4))
 def test_speciesDestruction():    
@@ -90,7 +89,26 @@ def test_speciesDestruction():
     for key in system.Ecosystem.intMatrix:
         assert not ('C' in key)
     
-
+def test_SpeciesPars():
+    """
+    Test if the dictionary species_pars in the Ecosystem class is updated
+    correctly.
+    """
+    sp1 = system.Species('A', [], [1])
+    sp2 = system.Species('AA', [], [])
+    
+    assert sp1.species_pars == sp2.species_pars
+    assert len(sp1.species_pars.keys()) == 2
+    
+    assert sp1.species_par == { 'A' : [1], 'AA' : [0,0,0,0] }
+    
+    del sp1
+    
+    assert sp2.species_par == { 'AA' : [0,0,0,0] }
+    
+    del sp2
+    
+    assert system.Ecosystem.species_pars == {}
 
 
 

@@ -6,6 +6,9 @@ Created on Sat Sep 26 09:52:55 2020
 @author: FMagnani
 """
 
+import logging
+
+#%%
 
 class Ecosystem:
     """
@@ -30,6 +33,8 @@ class Ecosystem:
     species_list = []
     
     intMatrix = {}
+    
+    species_pars = {}
     
     
 class Species(Ecosystem):
@@ -72,27 +77,44 @@ class Species(Ecosystem):
     
     """
     
-    def __init__(self, name, interactions):
+    def __init__(self, name, interactions, pars):
         """
         This method creates the dictionary specifying the interaction of
         this species with respect to all the others, and then updates the 
         informations stored in the Ecosystem.
         """
         
+        other_species = len(Ecosystem.species_list)
+        
         if (name in self.species_list):
-            raise TypeError("Name already existing. Species must have different names.")
+            raise TypeError("""Name already existing. Species must have different names.""")
+
+
+        if (len(interactions) > other_species+1):
+            raise ValueError("""The length of 'interactions' should be equal to the number of total species +1.""")
 
         else:
-            self.name = name
+            
+             if (len(interactions) < other_species+1):
+                 logging.warning("""The length of 'interactions' should be equal to the number of total species +1. The missing value will be set to 0.""")
+            
+                 interactions = pad_list(interactions, other_species+1)
         
-            Ecosystem.species_list.append(name)
+             self.name = name
+         
+             Ecosystem.species_list.append(name)
     
-            self.interactions = {}
-    
-            for i, j in zip(Ecosystem.species_list, range(len(Ecosystem.species_list))):
-                self.interactions[(name, i)] = interactions[j]
-    
-            Ecosystem.intMatrix.update(self.interactions)
+             self.interactions = {}          
+             
+             for i, j in zip(Ecosystem.species_list, range(other_species+1)):
+                 self.interactions[(name, i)] = interactions[j]
+                 
+             Ecosystem.intMatrix.update(self.interactions)
+            
+             self.pars = {self.name : pars}
+            
+             Ecosystem.species_pars.update(self.pars)
+            
     
     def __del__(self):
         """
@@ -108,10 +130,32 @@ class Species(Ecosystem):
                 key_blacklist.append(key)
         for key in key_blacklist:
             Ecosystem.intMatrix.pop(key)
+       
+
+#%%
+            
+   
+def pad_list(list_to_pad, new_length):
+        
+    missing = new_length - len(list_to_pad)
+        
+    for i in range(missing):
+        list_to_pad.append(0)
+            
+    return list_to_pad
+    
+    
+        
+        
+        
             
         
+
+
 #%%     
         
+class Prey(Species):
+    pass
 
         
         

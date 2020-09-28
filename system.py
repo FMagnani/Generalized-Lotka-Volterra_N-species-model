@@ -74,6 +74,8 @@ class Species(Ecosystem):
     Raise
     -----
     TypeError if the chosen name already exists.
+    ValueError if the input lists are too long.
+    Warning if the input lists are too short (then it is padded).
     
     """
     
@@ -82,6 +84,8 @@ class Species(Ecosystem):
         This method creates the dictionary specifying the interaction of
         this species with respect to all the others, and then updates the 
         informations stored in the Ecosystem.
+        It also check for the correctness of the inputs eventually padding
+        'interactions' or 'pars' with zeros.
         """
         
         other_species = len(Ecosystem.species_list)
@@ -92,6 +96,7 @@ class Species(Ecosystem):
 
         if (len(interactions) > other_species+1):
             raise ValueError("""The length of 'interactions' should be equal to the number of total species +1.""")
+
 
         else:
             
@@ -118,8 +123,8 @@ class Species(Ecosystem):
     
     def __del__(self):
         """
-        This method removes the name from the list of the species and all the
-        interactions in which it was involved, stored in the Ecosystem.
+        This method removes  all the interactions in which the instance 
+        was involved, stored in the class Ecosystem.
         """
         
         Ecosystem.species_list.remove(self.name)
@@ -130,6 +135,14 @@ class Species(Ecosystem):
                 key_blacklist.append(key)
         for key in key_blacklist:
             Ecosystem.intMatrix.pop(key)
+            
+        key_blacklist = []
+        for key in Ecosystem.species_pars:
+            if (self.name == key):
+                key_blacklist.append(key)
+        for key in key_blacklist:
+            Ecosystem.species_pars.pop(key)
+               
        
 
 #%%

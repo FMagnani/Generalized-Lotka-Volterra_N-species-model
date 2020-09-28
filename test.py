@@ -21,8 +21,8 @@ def test_speciesCreation(a,b,c,A,B):
     sp2_inter = [b]
     sp2_inter.append(c)
 
-    sp1 = system.Species(A, sp1_inter)
-    sp2 = system.Species(B, sp2_inter)
+    sp1 = system.Species(A, sp1_inter, [])
+    sp2 = system.Species(B, sp2_inter, [])
     
     assert len(sp1.species_list) == len(sp2.species_list)
     assert len(sp1.species_list) == 2
@@ -40,8 +40,8 @@ def test_classVsInstanceInformation(a,b,c,A,B):
     sp2_inter = [b]
     sp2_inter.append(c)
 
-    sp1 = system.Species(A, sp1_inter)
-    sp2 = system.Species(B, sp2_inter)
+    sp1 = system.Species(A, sp1_inter, [])
+    sp2 = system.Species(B, sp2_inter, [])
     
     assert len(sp1.species_list) == len(system.Ecosystem.species_list)
     assert len(system.Ecosystem.species_list) == 2
@@ -63,9 +63,9 @@ def test_speciesDestruction():
     sp3_inter.append(5)
     sp3_inter.append(6)
 
-    sp1 = system.Species('A', sp1_inter)
-    sp2 = system.Species('B', sp2_inter)
-    sp3 = system.Species('C', sp3_inter)
+    sp1 = system.Species('A', sp1_inter, [])
+    sp2 = system.Species('B', sp2_inter, [])
+    sp3 = system.Species('C', sp3_inter, [])
 
     del sp1
     
@@ -92,19 +92,24 @@ def test_speciesDestruction():
 def test_SpeciesPars():
     """
     Test if the dictionary species_pars in the Ecosystem class is updated
-    correctly.
+    correctly. 
     """
+    
+    zeros = []
+    for i in range(system.SPECIES_PARS):
+        zeros.append(0)
+    
     sp1 = system.Species('A', [], [1])
     sp2 = system.Species('AA', [], [])
     
     assert sp1.species_pars == sp2.species_pars
     assert len(sp1.species_pars.keys()) == 2
     
-    assert sp1.species_par == { 'A' : [1], 'AA' : [0,0,0,0] }
+    assert sp1.species_pars == { 'A' : [1], 'AA' : zeros }
     
     del sp1
     
-    assert sp2.species_par == { 'AA' : [0,0,0,0] }
+    assert sp2.species_pars == { 'AA' : zeros }
     
     del sp2
     

@@ -79,7 +79,7 @@ class Species(Ecosystem):
     -----
     TypeError if the chosen name already exists.
     ValueError if the input lists are too long.
-    Warning if the input lists are too short (then it is padded).
+    Warning if the input lists are too short (then they are padded).
     
     """
     
@@ -112,10 +112,10 @@ class Species(Ecosystem):
             
                  interactions = pad_list(interactions, other_species+1)
         
-             if (len(interactions) < other_species+1):
+             if (len(pars) < other_species+1):
                  logging.warning('The length of "pars" should be equal to {}. The missing value will be set to 0.'.format(SPECIES_PARS))
             
-                 interactions = pad_list(pars, SPECIES_PARS)
+                 pars = pad_list(pars, SPECIES_PARS)
         
              self.name = name
          
@@ -161,7 +161,25 @@ class Species(Ecosystem):
             
    
 def pad_list(list_to_pad, new_length):
+    """
+
+    Parameters
+    ----------
+    list_to_pad : list
+        This is the list to be padded with zeros up to length new_length.
+    new_length : int
+        Must be greater than the length of list_to_pad. It is the length of
+        the returned list.
+
+    Returns
+    -------
+    list
+
+    """
         
+    if (len(list_to_pad) > new_length):
+        raise ValueError("The new length of the list must be greater than the original length.")
+    
     missing = new_length - len(list_to_pad)
         
     for i in range(missing):

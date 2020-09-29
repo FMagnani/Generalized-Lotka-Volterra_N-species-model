@@ -7,6 +7,7 @@ Created on Sat Sep 26 14:24:50 2020
 """
 
 import system
+import systemDynamicGenerator
 from hypothesis import strategies as st
 from hypothesis import given
 
@@ -137,8 +138,14 @@ def test_createData():
     assert data[6][1][2] == -data[6][2][1]
     assert data[6][0][0] == 0
     assert data[6][1][1] == 2
-
-
+    
+def test_DynamicGenerator():
+    assert systemDynamicGenerator.create_Strings(3) == ('k0,k1,k2,K0,K1,K2,c0,c1,c2,A00,A01,A02,A11,A12,A22', 
+                                                        'k[0],k[1],k[2],K[0],K[1],K[2],c[0],c[1],c[2],A[0][0],A[0][1],A[0][2],A[1][1],A[1][2],A[2][2]',
+                                                        'n0,n1,n2',
+                                                        'dn0dt,dn1dt,dn2dt',
+                                                        'dn0dt = k0*n0 + A00*n0*n0/c0 + A01*n0*n1/c0 + A02*n0*n2/c0\ndn1dt = k1*n1 + A11*n1*n1/c1 - A10*n1*n0/c1 + A12*n1*n2/c1\ndn2dt = k2*n2 + A22*n2*n2/c2 - A20*n2*n0/c2 - A21*n2*n1/c2\n')
+    
 
 #%%
 

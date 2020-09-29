@@ -6,6 +6,25 @@ Created on Tue Sep 29 14:18:35 2020
 @author: fede
 """
 
+def create_Module(N):
+    
+    str0 = create_Strings(N)[0]
+    str2 = create_Strings(N)[2]
+    str4 = create_Strings(N)[4]
+    str3 = create_Strings(N)[3]
+    str1 = create_Strings(N)[1]
+    
+    module = '\ndef system (y, t, '+ str0 +'):\n' \
+             +'\n'+ str2 +' = y\n' \
+             +'\n'+ str4 \
+             +'\ndydt = ['+ str3 +']\n' \
+             +'\nsol = odeint(system, n0, t, args=('+ str1 +')\n'
+    
+    return module
+
+
+
+
 def create_Strings(N):
     """
     Creates the strings needed for the dynamical generation.

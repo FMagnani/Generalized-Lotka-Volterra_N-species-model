@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+python gui#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Tue Sep 29 14:18:35 2020
@@ -7,6 +7,12 @@ Created on Tue Sep 29 14:18:35 2020
 """
 
 def merge_All(N):
+    """
+    Creates the final string containing the whole code.
+    You can see the example of a possible code created in the file
+    'Integrator_Example.py', or here:
+        --link--
+    """
     
     intro = \
 """from scipy.integrate import odeint
@@ -43,6 +49,10 @@ data.to_csv(r'solutionData.csv', index=True, header=True)
     
 
 def create_Module(N):
+    """
+    It creates the main module of the generated code. It will be add to
+    the 'intro' and 'outro' string by merge_All to complete the script.
+    """
     
     str0 = create_Strings(N)[0]
     str2 = create_Strings(N)[2]

@@ -7,13 +7,13 @@ Created on Sat Sep 26 09:52:55 2020
 """
 
 import logging
-import numpy as np
+from numpy import zeros
 
-#%%
+
 
 SPECIES_PARS = 4
 
-#%%
+
 
 class Ecosystem:
     """
@@ -121,11 +121,11 @@ class Ecosystem:
         
         for i, key in zip(range(N), cls.species_list):
             
-            aii = int(k[i]>0)*k[i]*K[i]/c[i]
+            aii = int(k[i]>0)*k[i]*c[i]/K[i]
             
             cls.intMatrix.update({(key,key):aii})
                 
-        A = np.zeros((N,N))
+        A = zeros((N,N))
         
         for I, i in zip( cls.species_list, range(N) ):
             for J, j in zip( cls.species_list, range(N) ):     
@@ -292,7 +292,7 @@ class Species(Ecosystem):
                
  
 
-#%%     
+    
         
 class Prey(Species):
     """
@@ -360,7 +360,7 @@ class Predator(Species):
 
 
         
-#%%
+
 
 def pad_list(list_to_pad, new_length, padding_value):
     """

@@ -6,6 +6,42 @@ Created on Tue Sep 29 14:18:35 2020
 @author: fede
 """
 
+def merge_All(N):
+    
+    intro = \
+"""from scipy.integrate import odeint
+import pandas as pd
+import numpy as np
+
+data =pd.read_csv("setUpData.csv")
+
+max_Time = 20
+t = np.linspace(0,max_Time,2**7)
+
+names = list(data['Species'])
+n0 = list(data['n0'])
+k = list(data['k'])
+K = list(data['K'])
+c = list(data['c'])
+N = len(k)
+A = []
+for i in (range(N)):\n    A.append( list(data['A_row'+str(i)]) )"""
+
+    outro =\
+"""\nsol_unzip = list(zip(*sol))
+data = pd.DataFrame()
+for i, name in zip(range(N), names):
+    data[name] = sol_unzip[i]
+    
+data.to_csv(r'solutionData.csv', index=True, header=True)
+"""
+
+    code = intro + create_Module(N) + outro
+
+    return code    
+
+    
+
 def create_Module(N):
     
     str0 = create_Strings(N)[0]
@@ -13,12 +49,14 @@ def create_Module(N):
     str4 = create_Strings(N)[4]
     str3 = create_Strings(N)[3]
     str1 = create_Strings(N)[1]
+    str5 = create_Strings(N)[5]
     
     module = '\ndef system (y, t, '+ str0 +'):\n' \
-             +'\n'+ str2 +' = y\n' \
+             +'\n    '+ str2 +' = y\n' \
              +'\n'+ str4 \
-             +'\ndydt = ['+ str3 +']\n' \
-             +'\nsol = odeint(system, n0, t, args=('+ str1 +')\n'
+             +'\n    dydt = ['+ str3 +']\n' \
+             +'\n    return dydt\n' \
+             +'\nsol = odeint(system,('+ str5 +'), t, args=('+ str1 +'))\n'
     
     return module
 
@@ -46,12 +84,15 @@ def create_Strings(N):
         return[3]: The string for the definition of the solution dydt inside
                    function 'system'.
         return[4]: The string defining the system of equations itself.
+        return[5]: The string defining the second argument (initial values) 
+                   for odeint.
     
     """
 
     string_vars = ''
     string_args = ''
     string_n = ''
+    string_n0 = ''
     string_dndt = ''
     string_sys = ''
     
@@ -61,6 +102,8 @@ def create_Strings(N):
         string_args += 'k[' + str(i) + '],'
         
         string_n += 'n' + str(i) + ','
+        
+        string_n0 += 'n0[' + str(i) + '],'
         
         string_dndt += 'dn' + str(i) + 'dt,' 
     
@@ -78,7 +121,7 @@ def create_Strings(N):
     sys = []
         
     for i in range(N):
-        sys.append( 'dn'+str(i)+'dt = k'+str(i)+'*n'+str(i)+' + A'+str(i)*2
+        sys.append( '    dn'+str(i)+'dt = k'+str(i)+'*n'+str(i)+' + A'+str(i)*2
                    +('*n'+str(i))*2+'/c'+str(i) )
     
         
@@ -90,14 +133,14 @@ def create_Strings(N):
             
             if not (i==j):
                 sys[i] +=' + A'+str(i)+str(j)+'*n'+str(i)+'*n'+str(j)+'/c'+str(i)
-                sys[j] +=' - A'+str(j)+str(i)+'*n'+str(j)+'*n'+str(i)+'/c'+str(j)
+                sys[j] +=' - A'+str(i)+str(j)+'*n'+str(j)+'*n'+str(i)+'/c'+str(j)
      
     for i in range(N):
         string_sys += sys[i] + '\n'          
     
         
     return (string_vars[:-1], string_args[:-1], string_n[:-1], 
-            string_dndt[:-1], string_sys)
+            string_dndt[:-1], string_sys, string_n0[:-1])
     
     
     

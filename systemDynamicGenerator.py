@@ -16,7 +16,7 @@ import numpy as np
 data =pd.read_csv("setUpData.csv")
 
 max_Time = 20
-t = np.linspace(0,max_Time,2**7)
+t = np.linspace(0,max_Time,2**9)
 
 names = list(data['Species'])
 n0 = list(data['n0'])

@@ -110,17 +110,49 @@ def test_PreyPredatorInput():
 
     del pred
     
-    pred = system.Predator('wolf', [0], [1,-1,-1,-1])
+    pred = system.Predator('wolf', [0], [1,1,-1,-1])
     
     assert system.Ecosystem.intMatrix == { ('wolf', 'rabbit') : 0 }
-    assert pred.pars == {'wolf' : [1,1,-1,1]}
+    assert pred.pars == {'wolf' : [1,-1,-1,1]}
 
 
+def test_createData():
+    """
+    Tests if the method createData of the class Ecosystem returns correctly 
+    the data stored.
+    """
 
-
-
-
+    pred1 = system.Predator('wolf', [], [1,-1,1,1])
+    prey1 = system.Prey('rabbit', [-2], [2,2,2,2])
+    pred2 = system.Predator('fox', [0,3], [3,-3,3,3])
+    
+    data = system.Ecosystem.create_data()
+        
+    assert data[0] == 3
+    assert data[1] == ['wolf', 'rabbit', 'fox']
+    assert data[2] == [1,2,3]
+    assert data[3] == [-1,2,-3]    
+    assert data[4] == [1,2,3]
+    assert data[5] == [1,2,3]
+    assert data[6][1][2] == -data[6][2][1]
+    assert data[6][0][0] == 0
+    assert data[6][1][1] == 2
 
 
 
 #%%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

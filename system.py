@@ -7,6 +7,7 @@ Created on Sat Sep 26 09:52:55 2020
 """
 
 import logging
+import numpy as np
 
 #%%
 
@@ -39,6 +40,98 @@ class Ecosystem:
     intMatrix = {}
     
     species_pars = {}
+    
+    @classmethod
+    def create_data(cls):
+        """
+        
+
+        Parameters
+        ----------
+        cls : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        An ordered tuple of arrays.
+        return[0]: N  -number of species/ dimension of the system 
+        return[1]: list of the species' names 
+        return[2]: n0 -array of initial conditions
+        return[3]: k  -array of k pars
+        return[4]: K  -array of K pars
+        return[5]: c  -array of c pars
+        return[6]: A  -interaction Matrix
+    
+        The order of the values of each array is the same as the list of 
+        species' name.
+        So n0[0] refers to the species 'names[0]' and so on.
+        """
+        
+        N = len(cls.species_list)
+
+
+        n0 = []
+        k = []
+        K = []
+        c = []
+        for key in cls.species_list:
+            n0.append(cls.species_pars[key][0])
+            k.append(cls.species_pars[key][1])
+            K.append(cls.species_pars[key][2])
+            c.append(cls.species_pars[key][3])
+        
+        A = cls.dict_into_matrix(k, K, c)
+        
+        return (N, cls.species_list, n0, k, K, c, A)
+        
+    
+    @classmethod
+    def dict_into_matrix(cls, k, K, c):
+        """
+        This method takes the interaction matrix, that is a dict with keys 
+        of shape (2,1), without "diagonal" entries, without "reciprocal" entries.
+        "No diagonal entries" means the absence of keys = ('Name','Name').
+        "No reciprocal entries" means that if ('Name1','Name2') is present,
+        ('Name2','Name1') must be absent.
+        Then the dictionary is converted into the square antysimmetric matrix
+        needed by the system.
+        Parameters k, K, c are needed in order to compute the diagonal 
+        values.
+
+        
+        Returns
+        -------
+        A square antisymetric matrix, with diagonal entries obtained 
+        with the formula:
+            
+            aii = int(ki>0)*(ci ki)/Ki 
+            
+        See the documentation for further informations.
+        """
+        
+        N = len(cls.species_list)
+        
+        to_add = {}
+
+        for key in Ecosystem.intMatrix:
+            if not (key[0] == key[1]):
+                to_add.update({(key[1], key[0]) : - Ecosystem.intMatrix[key]})
+        
+        cls.intMatrix.update(to_add)
+        
+        for i, key in zip(range(N), cls.species_list):
+            
+            aii = int(k[i]>0)*k[i]*K[i]/c[i]
+            
+            cls.intMatrix.update({(key,key):aii})
+                
+        A = np.zeros((N,N))
+        
+        for I, i in zip( cls.species_list, range(N) ):
+            for J, j in zip( cls.species_list, range(N) ):     
+                A[i][j] = cls.intMatrix[(I,J)]
+    
+        return A
     
     
 class Species(Ecosystem):
@@ -228,7 +321,7 @@ class Prey(Species):
             pars[2] *= -1
                 
         for i in range(len(interactions)):
-            if not (interactions[i] < 0):
+            if (interactions[i] > 0):
                 logging.warning("Interaction sign changed. All interactions should be eithr negative or zero for preys.")
                 interactions[i] *= -1    
                 
@@ -250,7 +343,7 @@ class Predator(Species):
     
     def __init__(self, name, interactions, pars):
     
-        if (pars[1] < 0):
+        if (pars[1] > 0):
            logging.warning("Sign of pars[1] has been changed. It should be negative for predators. See documentation of class 'Species' for further explanations.")
            pars[1] *= -1
         
@@ -258,7 +351,7 @@ class Predator(Species):
             raise ValueError("pars[2] must be different from zero. See documentation of class 'Species' for further explanations.")
                 
         for i in range(len(interactions)):
-            if not (interactions[i] > 0):
+            if (interactions[i] < 0):
                 logging.warning("Interaction sign changed. All interactions should be eithr positive or zero for predators.")
                 interactions[i] *= -1    
                 
@@ -299,7 +392,8 @@ def pad_list(list_to_pad, new_length, padding_value):
     return list_to_pad       
         
         
-        
+    
+    
         
         
         

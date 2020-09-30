@@ -68,14 +68,15 @@ Thus the dataflow is the following:
 
 In a typical execution, the file ***system*** is compiled and through his classes Species, Prey, Predator the system is set up and solved from the command line.
 
-![config](.images/use_example.png)
+![config](./images/use_example.png)
 
 The objects Prey and Predators check the given input and correct the mistakes, in order to help the user with typo errors. For speceis not completely prey nor predators, e.g. a fox that eats rabbits but is eaten by wolves, the object Species can be used.
-Species can be deleted or added during the execution and the status of the system can be checked as easy as shown below.
+Species can be deleted or added during the execution and the status of the system can be checked as easy as shown below.  
 
-![config](.images/status)
+![config](./images/status_example.png)  
+  
+![config](./images/LV_4species.png)  
 
-![config](.images/LV_4species)
 
 :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf:
 

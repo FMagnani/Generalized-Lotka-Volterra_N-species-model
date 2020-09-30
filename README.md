@@ -74,10 +74,17 @@ The objects Prey and Predators check the given input and correct the mistakes, i
 Species can be deleted or added during the execution and the status of the system can be checked as easy as shown below.  
 
 ![config](./images/status_example.png)  
+In the following example, the system with 2 preys and 1 predator has been replicated. The coefficient are shown as a reference:  
+sp1 = Species('Prey 1', [ ], [30,0.09,10000,400])  
+sp2 = Species('Prey 2', [1], [10,0.06,10000,500])  
+sp3 = Species('Predator', [1,1], [20,-0.05,10000,250])  
+
+Integration has been made up to time=500 with the command:  
+sp1.solve(500)
+
+![config](./images/LV_2Prey1Pred.png)  
   
-![config](./images/LV_4species.png)  
-
-
+  
 :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf:
 
 

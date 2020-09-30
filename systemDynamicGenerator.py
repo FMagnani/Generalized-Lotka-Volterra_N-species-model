@@ -1,18 +1,32 @@
-python gui#!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Tue Sep 29 14:18:35 2020
 
-@author: fede
+@author: FMagnani
 """
 
-def merge_All(N):
+def merge_All(N, max_time, t_steps):
+
     """
+        Parameters
+        ----------
+            N: int 
+        Number of species (i.e. of equations in the system)
+            max_time: float
+        Maximum time reached in the integration
+            t_steps: int
+        Number of steps in which the time is divided. 
+        In the form 2**n +1 performance is increased.
+        
     Creates the final string containing the whole code.
     You can see the example of a possible code created in the file
     'Integrator_Example.py', or here:
         --link--
     """
+    
+    max_time = str(max_time)
+    t_steps = str(t_steps)
     
     intro = \
 """from scipy.integrate import odeint
@@ -21,8 +35,7 @@ import numpy as np
 
 data =pd.read_csv("setUpData.csv")
 
-max_Time = 20
-t = np.linspace(0,max_Time,2**9)
+t = np.linspace(0,"""+ max_time +','+ t_steps +""")
 
 names = list(data['Species'])
 n0 = list(data['n0'])

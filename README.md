@@ -70,7 +70,7 @@ In a typical execution, the file ***system*** is compiled and through his classe
 
 ![config](./images/use_example.png)
 
-The objects Prey and Predators check the given input and correct the mistakes, in order to help the user with typo errors. For speceis not completely prey nor predators, e.g. a fox that eats rabbits but is eaten by wolves, the object Species can be used.
+The objects Prey and Predators check the given input and correct the mistakes, in order to help the user with typo errors. For species not completely preys or predators, e.g. a fox that eats rabbits but is eaten by wolves, the object Species can be used.
 Species can be deleted or added during the execution and the status of the system can be checked as easy as shown below.  
 
 ![config](./images/status_example.png)  

@@ -4,6 +4,8 @@
 Created on Tue Sep 29 18:16:12 2020
 
 @author: FMagnani
+GitHub repo: https://github.com/FMagnani/Lotka_Volterra_N_species_model
+
 """
 
 import systemDynamicGenerator
@@ -11,11 +13,11 @@ import pandas as pd
 
 def pad_list(list_to_pad, new_length, padding_value):
     """
-
     Parameters
     ----------
     list_to_pad : list
-        This is the list to be padded with zeros up to length new_length.
+        This is the list to be padded with 'padding_value' up to length 
+        'new_length'.
     new_length : int
         Must be greater than the length of list_to_pad. It is the length of
         the returned list.
@@ -24,7 +26,7 @@ def pad_list(list_to_pad, new_length, padding_value):
 
     Returns
     -------
-    list
+    list of length 'new_length'
 
     """
         
@@ -39,11 +41,15 @@ def pad_list(list_to_pad, new_length, padding_value):
     return list_to_pad       
         
  
-def create_dataSetUp(data, N):
+def create_dfSetUp(data):
     """
-        N: int - dimension of the system (number of species)
-    Creates a DataFrame with the current status of the system.
+    Returns a pandas DataFrame with the current status of the system.
+
+    Parameters
+    ----------
+    data: Species
     """
+    N = len(data.species_list)
     
     df = pd.DataFrame()
 
@@ -60,11 +66,17 @@ def create_dataSetUp(data, N):
    
 def generate_Integrator(N, t_max, t_step):
     """
-        N: int - dimension of the system (number of species)
-    Dynamical generation of Integrator.py.
-    An example of the code is the file 'Integrator_Example.py', or can be 
-    seen here:
-        ---link---
+    Dynamical generation of integrator.py.
+    You can see the example of a possible code created in the file
+    'Integrator_Example.py', or here:
+    
+    N: int
+        Dimension of the system (number of species)
+    t_max: float
+        Maximum time reached in the integration
+    t_step: int
+        Number of steps in which the time is divided. 
+        In the form 2**n +1 performance is increased.
     """
     
     code = systemDynamicGenerator.merge_All(N, t_max, t_step)
@@ -75,8 +87,8 @@ def generate_Integrator(N, t_max, t_step):
       
 def exe_Integrator():
     """    
-    Execute the previously generated file 'Integrator.py'.
-    It will output the file "solutionData.csv".
+    Execute the file 'Integrator.py', that will output the file 
+    "solutionData.csv".
     """
     with open("integrator.py") as f:
         code = compile(f.read(), "integrator.py", 'exec')

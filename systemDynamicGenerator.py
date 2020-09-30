@@ -4,25 +4,27 @@
 Created on Tue Sep 29 14:18:35 2020
 
 @author: FMagnani
+GitHub repo: https://github.com/FMagnani/Lotka_Volterra_N_species_model
+
 """
 
 def merge_All(N, max_time, t_steps):
 
     """
-        Parameters
-        ----------
-            N: int 
-        Number of species (i.e. of equations in the system)
-            max_time: float
-        Maximum time reached in the integration
-            t_steps: int
-        Number of steps in which the time is divided. 
-        In the form 2**n +1 performance is increased.
-        
-    Creates the final string containing the whole code.
+    Creates the final string containing the whole code of integartor.py.
     You can see the example of a possible code created in the file
     'Integrator_Example.py', or here:
         --link--
+
+    Parameters
+    ----------
+    N: int 
+        Number of species (i.e. of equations in the system)
+    max_time: float
+        Maximum time reached in the integration
+    t_steps: int
+        Number of steps in which the time is divided. 
+        In the form 2**n +1 performance is increased.
     """
     
     max_time = str(max_time)
@@ -62,7 +64,7 @@ data.to_csv(r'solution.csv', index=True, header=True)
 
 def current_system(data):
     """
-    Returns the system with current variables values in a string format.
+    Returns the system of equations with current variables values, as a string.
     """
     
     k = data.create_data()[3]

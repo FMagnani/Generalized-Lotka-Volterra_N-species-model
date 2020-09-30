@@ -302,7 +302,7 @@ class Species(Ecosystem):
              In the form 2**n +1 performance is increased.
         """
         N = len(self.species_list)
-        df = sysFunctions.create_dataSetUp(self, N)
+        df = sysFunctions.create_dfSetUp(self)
         df.to_csv(r'setup.csv', index=True, header=True)
         sysFunctions.generate_Integrator(N, max_time, t_steps)
         sysFunctions.exe_Integrator()

@@ -10,6 +10,8 @@ import system
 import systemDynamicGenerator
 import pandas as pd
 from datetime import datetime
+import shutil
+import os
 
 def solve(max_time=20, t_steps=2**7+1):
     """
@@ -46,18 +48,30 @@ def create_dataSetUp(N):
     
     return df
 
-def save_dataSetUp(df, name = datetime.now()):
+def save_data(data, name = datetime.now()):
     """
     Parameters
     ----------
-        df: Dataframe to be saved
+        data: Dataframe to be saved
         name: str - Name given to the file
     Save permanently the current status of the system as csv in the 
     directory 'Saved_States'.
     """
-    df.to_csv(r'/Saved_States/setUpData_{}'.format(name), 
-                  index=True, header=True)
-
+    if (data == 'status'):    
+        with open('setUpData.csv') as f:
+            shutil.copy(f, '/Saved_States')
+            os.rename('/Saved_States/dataname', 
+                      '/Saved_States/setUpData_{}'.format(name))
+    if (data == 'solution'):
+         with open('solutionData.csv') as f:
+            shutil.copy(f, '/Saved_Solutions')
+            os.rename('/Saved_Solutions/dataname', 
+                      '/Saved_Solutions/solutionData_{}'.format(name))
+    if (data == 'plot'):
+        with open('plotData.csv') as f:
+            shutil.copy(f, '/Saved_Plots')
+            os.rename('/Saved_Plots/dataname', 
+                      '/Saved_Plots/plotData_{}'.format(name))
     
 def generate_Integrator(N, t_max, t_step):
     """

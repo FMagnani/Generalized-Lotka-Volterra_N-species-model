@@ -4,6 +4,7 @@
 Created on Sat Sep 26 09:52:55 2020
 
 @author: FMagnani
+GitHub repo: https://github.com/FMagnani/Lotka_Volterra_N_species_model
 """
 
 import logging
@@ -23,19 +24,13 @@ class Ecosystem:
     Ecosystem()
     
     This class is used to store and manage the information about the whole
-    system of interacting species. It's parent of the class Species, since
-    alla its instances must have access to this information. 
-    Such information is the list of all the species and the matrix of their
-    binary interactions.
-    Whenever a new species is created, both these are updated. 
+    system of interacting species. Such information is the list of all the 
+    species, their parameters and the matrix of their binary interactions.
+    Whenever a new species is created or deleted, all these are updated. 
     
     ..note:: This class is not supposed to create instances, but to store
              and manage the information about the system. 
  
-    Parameters
-    ----------
-    none
-    
     """
     
     species_list = []
@@ -47,13 +42,8 @@ class Ecosystem:
     @classmethod
     def create_data(cls):
         """
+        Organizes the data in a single tuple.        
         
-
-        Parameters
-        ----------
-        cls : TYPE
-            DESCRIPTION.
-
         Returns
         -------
         An ordered tuple of arrays.
@@ -92,24 +82,24 @@ class Ecosystem:
     def dict_into_matrix(cls, k, K, c):
         """
         This method takes the interaction matrix, that is a dict with keys 
-        of shape (2,1), without "diagonal" entries, without "reciprocal" entries.
+        of shape (2,1), without either "diagonal" or "reciprocal" entries.
         "No diagonal entries" means the absence of keys = ('Name','Name').
         "No reciprocal entries" means that if ('Name1','Name2') is present,
-        ('Name2','Name1') must be absent.
+        ('Name2','Name1') is absent.
         Then the dictionary is converted into the square antysimmetric matrix
         needed by the system.
         Parameters k, K, c are needed in order to compute the diagonal 
         values.
 
-        
         Returns
         -------
-        A square antisymetric matrix, with diagonal entries obtained 
+        A square antisymmetric matrix, with diagonal entries obtained 
         with the formula:
             
             aii = int(ki>0)*(ci ki)/Ki 
             
-        See the documentation for further informations.
+        See the documentation for further informations at
+        https://github.com/FMagnani/Lotka_Volterra_N_species_model
         """
         
         N = len(cls.species_list)
@@ -142,17 +132,13 @@ class Species(Ecosystem):
     Species(name, interaction, pars)
     
     Class representing a species. 
-    
-    ..note:: This class is not supposed to create instances, but to keep 
-             updated the Ecosystem. Instances should be created from Predator 
-             or Prey.
 
     Parameters
     ----------
-    name: string
+    NAME: string
         The name of the Species created. It univocally identifies it.
     
-    interaction: list. 
+    INTERACTION: list. 
         Length should be equal to the number of species already implemented. 
         If smaller, it is padded with zeros.
         It defines the interaction coefficients of this species with respect
@@ -160,16 +146,14 @@ class Species(Ecosystem):
         Ecosystem.
         
         So if Ecosystem.species_list = [ 'A', 'B']
-        and species 'C' is created with interactions = [1, 2]
-        to the interaction matrix implemented will be added the following:
+        and species 'C' is created with interactions = [1, 2],
+        the interaction matrix will be added with the following:
         {('C','A') : 1,
          ('C','B') : 2}
         
-        Due to theoretical reasons, this values are bounded to very 
-        specific ranges and sign.
         In the interaction matrix, a line as
         ('A','C') : 2
-        means that 'A' beats 'C' ('C' is eaten by 'A'), while
+        means that 'A' eats 'C' ('C' is eaten by 'A'), while
         ('A','C'): -2
         means that 'C' eats 'A'.
         
@@ -179,7 +163,7 @@ class Species(Ecosystem):
         be inserted), or is this species eaten by Ecosystem.species_list[i]
         (negative value)?"
         
-    pars: list. 
+    PARS: list. 
         It is the list of the parameters specific to this species.
         Length should be equal to 4. If smaller, it is padded with zeros.
         pars[0]: Initial value for population number (must be >0)
@@ -195,7 +179,8 @@ class Species(Ecosystem):
         pars[2] = Ki
         pars[3] = ci
         
-        See the documentation for further information on the formula.
+        See the documentation for further information on the formula, at
+        https://github.com/FMagnani/Lotka_Volterra_N_species_model .
         
         *The carrying capacity is not used by the equations related to
         predators. It can be set to any number.
@@ -215,11 +200,10 @@ class Species(Ecosystem):
     
     def __init__(self, name, interactions, pars):
         """
-        This method creates the dictionary specifying the interaction of
-        this species with respect to all the others, and then updates the 
-        informations stored in the Ecosystem.
-        It also check for the correctness of the inputs. 
-        Itventually pads 'interactions' or 'pars' with default values.
+        This method updates the dictionary specifying the interaction of
+        this species with respect to all the others.
+        It also checks the the inputs, eventually padding 'interactions' 
+        or 'pars' with default values.
         """
         
         other_species = len(Ecosystem.species_list)
@@ -311,11 +295,11 @@ class Species(Ecosystem):
         """
          Parameters
          ----------
+         max_time : float
+             Maximum time reached in the integration.
          t_steps : int
              Number of steps in which the time is divided.
              In the form 2**n +1 performance is increased.
-         max_time : float
-             Maximum time reached in the integration.
         """
         N = len(self.species_list)
         df = sysFunctions.create_dataSetUp(self, N)
@@ -325,6 +309,10 @@ class Species(Ecosystem):
 
     @staticmethod
     def plot():
+        """
+        Generates the plot of the population number versus time, for all
+        the species of the system.
+        """
         data = pd.read_csv('solution.csv')
 
         Species_names = list(data.columns[1:])

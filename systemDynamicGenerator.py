@@ -33,7 +33,7 @@ def merge_All(N, max_time, t_steps):
 import pandas as pd
 import numpy as np
 
-data =pd.read_csv("setUpData.csv")
+data =pd.read_csv("setup.csv")
 
 t = np.linspace(0,"""+ max_time +','+ t_steps +""")
 
@@ -52,13 +52,45 @@ data = pd.DataFrame()
 for i, name in zip(range(N), names):
     data[name] = sol_unzip[i]
     
-data.to_csv(r'solutionData.csv', index=True, header=True)
+data.to_csv(r'solution.csv', index=True, header=True)
 """
 
     code = intro + create_Module(N) + outro
 
     return code    
 
+
+def current_system(data):
+    """
+    Returns the system with current variables values in a string format.
+    """
+    
+    k = data.create_data()[3]
+    c = data.create_data()[5]
+    A = data.create_data()[6]
+    N = len(k)
+    
+    sys =[]
+    string_sys = ''
+    
+    for i in range(N):
+        sys.append( '    dn'+str(i)+'dt = '+str(k[i])+'*n'+str(i)+' + '+str(A[i][i])
+                   +('*n'+str(i))*2+'/'+str(c[i]) )
+        
+    
+        
+    for i in range(N):
+        for j in range(N)[i:]:
+            if not (i==j):
+                sys[i] +=' + '+str(A[i][j])+'*n'+str(i)+'*n'+str(j)+'/'+str(c[i])
+                sys[j] +=' - '+str(A[i][j])+'*n'+str(j)+'*n'+str(i)+'/'+str(c[j])
+    
+    for i in range(N):
+        string_sys += sys[i] + '\n'     
+        
+    return string_sys
+
+    
     
 
 def create_Module(N):
@@ -141,11 +173,12 @@ def create_Strings(N):
         
         string_args += 'c[' + str(i) + '],'
         
-    sys = []
-        
+    sys = []    
+    
     for i in range(N):
         sys.append( '    dn'+str(i)+'dt = k'+str(i)+'*n'+str(i)+' + A'+str(i)*2
                    +('*n'+str(i))*2+'/c'+str(i) )
+        
     
         
     for i in range(N):

@@ -6,31 +6,40 @@ Created on Tue Sep 29 18:16:12 2020
 @author: FMagnani
 """
 
-import system
 import systemDynamicGenerator
-import pandas as pd
-from datetime import datetime
-import shutil
-import os
+import pandas as pd 
 
-def solve(max_time=20, t_steps=2**7+1):
+def pad_list(list_to_pad, new_length, padding_value):
     """
+
     Parameters
     ----------
-    t_steps : int
-        Number of steps in which the time is divided.
-        In the form 2**n +1 performance is increased.
-    max_time : float
-        Maximum time reached in the integration.
+    list_to_pad : list
+        This is the list to be padded with zeros up to length new_length.
+    new_length : int
+        Must be greater than the length of list_to_pad. It is the length of
+        the returned list.
+    padding_value: float
+        The value used to pad the list.
+
+    Returns
+    -------
+    list
 
     """
-    N = len(system.Ecosystem.species_list)
-    df = create_dataSetUp(N)
-    df.to_csv(r'setUpData.csv', index=True, header=True)
-    generate_Integrator(N, max_time, t_steps)
-    exe_Integrator()
-
-def create_dataSetUp(N):
+        
+    if (len(list_to_pad) > new_length):
+        raise ValueError("The new length of the list must be greater than the original length.")
+    
+    missing = new_length - len(list_to_pad)
+        
+    for i in range(missing):
+        list_to_pad.append(padding_value)
+            
+    return list_to_pad       
+        
+ 
+def create_dataSetUp(data, N):
     """
         N: int - dimension of the system (number of species)
     Creates a DataFrame with the current status of the system.
@@ -40,39 +49,15 @@ def create_dataSetUp(N):
 
     col_names = ['Species','n0','k','K','c']
     for i in range(5):
-        df[col_names[i]] = system.Ecosystem.create_data()[i+1]
+        df[col_names[i]] = data.create_data()[i+1]
 
     for i in range(N):
         col = 'A_row'+str(i)
-        df[col] = system.Ecosystem.create_data()[6][i]
+        df[col] = data.create_data()[6][i]
     
     return df
 
-def save_data(data, name = datetime.now()):
-    """
-    Parameters
-    ----------
-        data: Dataframe to be saved
-        name: str - Name given to the file
-    Save permanently the current status of the system as csv in the 
-    directory 'Saved_States'.
-    """
-    if (data == 'status'):    
-        with open('setUpData.csv') as f:
-            shutil.copy(f, '/Saved_States')
-            os.rename('/Saved_States/dataname', 
-                      '/Saved_States/setUpData_{}'.format(name))
-    if (data == 'solution'):
-         with open('solutionData.csv') as f:
-            shutil.copy(f, '/Saved_Solutions')
-            os.rename('/Saved_Solutions/dataname', 
-                      '/Saved_Solutions/solutionData_{}'.format(name))
-    if (data == 'plot'):
-        with open('plotData.csv') as f:
-            shutil.copy(f, '/Saved_Plots')
-            os.rename('/Saved_Plots/dataname', 
-                      '/Saved_Plots/plotData_{}'.format(name))
-    
+   
 def generate_Integrator(N, t_max, t_step):
     """
         N: int - dimension of the system (number of species)

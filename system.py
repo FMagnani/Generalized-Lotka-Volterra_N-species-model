@@ -8,7 +8,10 @@ Created on Sat Sep 26 09:52:55 2020
 
 import logging
 from numpy import zeros
-
+import systemDynamicGenerator
+import sysFunctions
+import pandas as pd
+import matplotlib.pyplot as plt
 
 
 SPECIES_PARS = 4
@@ -237,12 +240,12 @@ class Species(Ecosystem):
              if (len(interactions) < other_species):
                  logging.warning("""The length of 'interactions' should be equal to the number of the other species. The missing values will be set to 0.""")
             
-                 interactions = pad_list(interactions, other_species, 0)
+                 interactions = sysFunctions.pad_list(interactions, other_species, 0)
         
              if (len(pars) < SPECIES_PARS):
                  logging.warning('The length of "pars" should be equal to {}. The missing value will be set to 0.5.'.format(SPECIES_PARS))
             
-                 pars = pad_list(pars, SPECIES_PARS, 0.5)
+                 pars = sysFunctions.pad_list(pars, SPECIES_PARS, 0.5)
         
              if (pars[0] < 0):
                   raise ValueError("The first parameter of 'pars' is the initial population number. Must be greater than 0.")
@@ -289,9 +292,53 @@ class Species(Ecosystem):
                 key_blacklist.append(key)
         for key in key_blacklist:
             Ecosystem.species_pars.pop(key)
+            
+    def status(self):
+        """
+        Prints the current status of all the variables in the system.
+        """
+        print('\nCurrent species in the system:\n')
+        print(self.species_list)
+        print('\nSpecies parameters:')
+        print(self.species_pars)
+        print('\nCurrent interactions between species:\n')
+        print(self.create_data()[6])
+        print('\n\nCurrent ODE system:\n')
+        print(systemDynamicGenerator.current_system(self))
+        print('\n')
                
- 
+    def solve(self, max_time=20, t_steps=2**7+1):
+        """
+         Parameters
+         ----------
+         t_steps : int
+             Number of steps in which the time is divided.
+             In the form 2**n +1 performance is increased.
+         max_time : float
+             Maximum time reached in the integration.
+        """
+        N = len(self.species_list)
+        df = sysFunctions.create_dataSetUp(self, N)
+        df.to_csv(r'setup.csv', index=True, header=True)
+        sysFunctions.generate_Integrator(N, max_time, t_steps)
+        sysFunctions.exe_Integrator()
 
+    @staticmethod
+    def plot():
+        data = pd.read_csv('solution.csv')
+
+        Species_names = list(data.columns[1:])
+        N = len(Species_names)
+        t = list(data['Unnamed: 0'])
+
+        fig, ax = plt.subplots()
+        for i, name in zip(range(N), Species_names):
+            nt = list(data[name])
+            ax.plot(t, nt, linewidth=4, label=name)
+
+        ax.set_facecolor('white')
+        ax.legend(loc='best')
+ 
     
         
 class Prey(Species):
@@ -359,48 +406,4 @@ class Predator(Species):
 
 
 
-        
-
-
-def pad_list(list_to_pad, new_length, padding_value):
-    """
-
-    Parameters
-    ----------
-    list_to_pad : list
-        This is the list to be padded with zeros up to length new_length.
-    new_length : int
-        Must be greater than the length of list_to_pad. It is the length of
-        the returned list.
-    padding_value: float
-        The value used to pad the list.
-
-    Returns
-    -------
-    list
-
-    """
-        
-    if (len(list_to_pad) > new_length):
-        raise ValueError("The new length of the list must be greater than the original length.")
-    
-    missing = new_length - len(list_to_pad)
-        
-    for i in range(missing):
-        list_to_pad.append(padding_value)
-            
-    return list_to_pad       
-        
-        
-    
-    
-        
-        
-        
-        
-        
-        
-        
-        
-        
         

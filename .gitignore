@@ -1,3 +1,5 @@
+gitignore
+
 #Temp files
 integrator.py
 setup.csv
@@ -7,7 +9,7 @@ solution.csv
 integrator_Example.py
 
 #Images
-Images/
+images/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

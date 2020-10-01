@@ -22,7 +22,7 @@ Overall, the change over time of the number of the preys is given by the balance
 
 Simmetrically β is the natural death rate of the predators, that are supposed to die if no predation occurs, while δ is their hunting efficiency. Note that γ and δ are different costants, since the gain percieved by predators can differ from the loss percieved by the preys. It can be roughly considered as the amount of preys needed to feed a predator. 
 
-The system just described behaves in an oscillatory fashion, as shown in Fig.1.
+The system just described behaves in an oscillatory fashion, as shown in the following figure.
 
 ![config](./images/LV_normal.png)
 
@@ -66,34 +66,56 @@ Thus the dataflow is the following:
 
 ## Usage examples
 
-In a typical execution, the file ***system*** is compiled and through his classes Species, Prey, Predator the system is set up and solved from the command line.
+In a typical execution, the file ***system*** is run and the system is set up and solved from the command line.  
+A new species is introduced to the system as an instance of one of the classes Species, Prey or Predator. The syntax is the following:
 
-![config](./images/use_example.png)
-
-The objects Prey and Predators check the given input and correct the mistakes, in order to help the user with typo errors. For species not completely preys or predators, e.g. a fox that eats rabbits but is eaten by wolves, the object Species can be used.
-Species can be deleted or added during the execution and the status of the system can be checked as easy as shown below.  
+species1 = Species('name', 'interactions', 'parameters')  
+***Name*** (string) is the name of the Species created. It univocally identifies it, so it cannot be the same of an already implemented species.  
+***Interactions*** (list) defines the interaction coefficients of this species with respect to all the others. Thus its length should be equal to the number of species already instanciated (if it's smaller it is padded with zeros, meaning total indifference between the species).  
+The order of the coefficients depends on the order in which the other species have been implemented: if 'Rabbit' has been added first in the system, its interaction list is empty. When 'Fox' is added, his list will be of length 1. If a third species is then implemented, his 'interactions' argument is a list of length 2, with the first number referring to its interaction coefficient with respect to 'Rabbit' and the second number referring to 'Fox'. The current status of the system can always be checked with the method 'status' of any of the species, as shown below.
 
 ![config](./images/status_example.png)  
-In the following example, the system with 2 preys and 1 predator has been replicated. The coefficient are shown as a reference:  
-sp1 = Species('Prey 1', [ ], [30,0.09,10000,400])  
-sp2 = Species('Prey 2', [1], [10,0.06,10000,500])  
-sp3 = Species('Predator', [1,1], [20,-0.05,10000,250])  
 
-Integration has been made up to time=500 with the command:  
-sp1.solve(500)
+***Sign of the interaction***: whenever a species is introduced, the system wil be updated accordingly. In particular, one can imagine that if two species 'A' and 'B' are already present, the introduction of C with interactions = [1,-1] will add to the system the following information:  
+('C','A') : 1  
+('C','B') : -1  
+That should be read as:  
+'C eats A'  
+'C is eaten by B'  
+ Thus passing as argument the list of interactions, one should ask himself for interaction i:  
+ "Does this species eat species i (in such a case, a positive value should be inserted), or is this species eaten by species i (negative value)?"  
+***Parameters*** (list) is the list of the parameters specific to this species. Length should be equal to 4 (if it's smaller the missing values are set to 0.5).  
+The first value is the initial value for population number, n0. It must be positive.  
+In the equation:  
+
+![equation5](<http://latex.codecogs.com/svg.latex?&space;\frac{dx_i}{dt}&space;=&space;k_i&space;x&space;(&space;1&space;-&space;\frac{x_i}{K_i}&space;\theta(k_i)&space;)&space;-&space;\frac{1}{c_i}&space;\sum_{i\neq&space;j}&space;a_i_j&space;x_i&space;x_j&space;&space;>)
+
+Parameter 1  = k<sub>i</sub> (Growth/death rate, depending on the sign)  
+Parameter 2 = K<sub>i</sub> (Carrying capacity. It is not used by the equations related to predators, it can be set to any number.)  
+Parameter 3 = c<sub>i</sub> (It must be positive)  
+  
+The objects Prey and Predator need the same arguments as Species, but they check and correct the given input to allign it to the declared behaviour of the species. For example, they can change the sign of a negative growth rate given to a Prey, while logging a warning to the user. For species not completely preys or predators, e.g. a fox that eats rabbits but is eaten by wolves, the object Species can be used.  
+
+It is possible to remove one species through the command del, for example to change its parameters. In such a case all the remaining species will be updated loosing the interaction coefficients with the removed one. So introducing it again, the input will be different:  
+  
+spec1 = Prey('rabbit', [ ], [10, 1, 10000, 10])&nbsp;&nbsp;&nbsp;&nbsp; # No interaction since this is the only species present  
+spec2 = Predator('fox', [1], [5, -1, 1, 20])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # The interaction of 'fox' with 'rabbit' is positive.  
+del spec1  
+spec1 = Prey('rabbit', [-1], [10, 1, 10000, 10])&nbsp;&nbsp;&nbsp; # The interaction coefficient with 'fox' must be specified again. It's negative this time.  
+  
+The last two methods needed to the user are 'solve' and 'plot'. The first accept the following parameters:  
+***Maximum time*** (float, default=20), that is the maximum time reached in the integration, starting from 0.  
+***Time steps*** (int, default=2^7+1), that are the number of steps in which 'maximum time' is divided. In the form (2^n)+1 performance is increased.  
+An example of a simple execution is the following, replicating the Predator Prey model:  
+
+![config](./images/use_example.png)
+  
+In the following example, the system with 2 preys and 1 predator has been replicated.  
+sp1 = Species('Prey 1', [ ], [30, 0.09, 10000, 400])  
+sp2 = Species('Prey 2', [1], [10, 0.06, 10000, 500])  
+sp3 = Species('Predator', [1,1], [20, -0.05, 10000, 250])  
+sp1.solve(500)  
+sp1.plot()  
 
 ![config](./images/LV_2Prey1Pred.png)  
   
-  
-:rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf:
-
-
-
-
-
-
-
-
-
-
-

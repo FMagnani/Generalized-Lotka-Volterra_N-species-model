@@ -14,7 +14,7 @@ def merge_All(N, max_time, t_steps):
     Creates the final string containing the whole code of integartor.py.
     You can see the example of a possible code created in the file
     'Integrator_Example.py', or here:
-        --link--
+    https://github.com/FMagnani/Generalized-Lotka-Volterra_N-species-model/tree/master/integrator_example
 
     Parameters
     ----------

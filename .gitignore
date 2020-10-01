@@ -3,6 +3,12 @@ integrator.py
 setup.csv
 solution.csv
 
+#Examples
+integrator_Example.py
+
+#Images
+Images/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

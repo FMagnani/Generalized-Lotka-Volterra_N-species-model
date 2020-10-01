@@ -327,6 +327,40 @@ class Species(Ecosystem):
         ax.set_facecolor('white')
         ax.legend(loc='best')
  
+    def set_interaction(self, other_species, new_coeff):
+        """        
+        OTHER_SPECIES: string
+            The name of the species with respect to which the interaction
+            coefficient is to be changed.
+        NEW_COEFF: float
+            The new value of the coefficient.
+        """
+        
+        for key in Ecosystem.intMatrix.keys():
+            if (self.name in key) and (other_species in key):
+                Ecosystem.intMatrix[key] = new_coeff
+        
+    def set_par(self, which, new_par):
+        """
+        WHICH: int
+            t specifies which parameter is to be changed, with the same order used for the input:
+            0 : Initial population
+            1 : k (Growth/Death rate)
+            2 : K (Carrying capacity)
+            3 : c
+        NEW_PAR: float
+            The new value of the parameter.        
+        """
+        if (which==0) or (which==2) or (which==3):
+            if (new_par<0):
+                logging.warning("The sign of the inserted parameter has been changed. It should be positive. See documentation of class 'Species' for further explanations.")
+                new_par *= -1
+                
+        
+        for key in Ecosystem.species_pars.keys():
+            if (self.name in key):
+                Ecosystem.species_pars[key][which] = new_par
+        
     
         
 class Prey(Species):
@@ -363,6 +397,31 @@ class Prey(Species):
         super().__init__(name, interactions, pars)
 
 
+    def set_par(self, which, new_par):
+        """
+        WHICH: int
+            From 0 to 3, it specifies which parameter is to be changed,
+            with the same order used for the input:
+            0 : Initial population
+            1 : k (Growth/Death rate)
+            2 : K (Carrying capacity)
+            3 : c
+        NEW_PAR: float
+            The new value of the parameter.        
+        """
+        
+        if (which==1) and (new_par<0):
+           logging.warning("The sign of the parameter has been changed. It should be positive for preys. See documentation of class 'Species' for further explanations.")
+           new_par *= -1
+           
+        if (which==2) and (new_par==0):
+            raise ValueError("The carrying capacity must be strictly positive. See documentation of class 'Species' for further explanations.")
+
+        
+        super().set_par(which, new_par)
+        
+        
+
 class Predator(Species):
     """
     This class is meant to be equivalent to the Species class, but with checks
@@ -392,6 +451,23 @@ class Predator(Species):
                 
         super().__init__(name, interactions, pars)
 
-
+    def set_par(self, which, new_par):
+        """
+        WHICH: int
+            From 0 to 3, it specifies which parameter is to be changed,
+            with the same order used for the input:
+            0 : Initial population
+            1 : k (Growth/Death rate)
+            2 : K (Carrying capacity)
+            3 : c
+        NEW_PAR: float
+            The new value of the parameter.        
+        """
+        
+        if (which==1) and (new_par>0):
+           logging.warning("Sign of pars[1] has been changed. It should be negative for preys. See documentation of class 'Species' for further explanations.")
+           new_par *= -1
+        
+        super().set_par(which, new_par)
 
         

@@ -22,7 +22,7 @@ Overall, the change over time of the number of the preys is given by the balance
 
 Simmetrically β is the natural death rate of the predators, that are supposed to die if no predation occurs, while δ is their hunting efficiency. Note that γ and δ are different costants, since the gain percieved by predators can differ from the loss percieved by the preys. It can be roughly considered as the amount of preys needed to feed a predator. 
 
-The system just described behaves in an oscillatory fashion, as shown in Fig.1.
+The system just described behaves in an oscillatory fashion, as shown in the following figure.
 
 ![config](./images/LV_normal.png)
 
@@ -70,30 +70,17 @@ In a typical execution, the file ***system*** is compiled and through his classe
 
 ![config](./images/use_example.png)
 
-The objects Prey and Predators check the given input and correct the mistakes, in order to help the user with typo errors. For species not completely preys or predators, e.g. a fox that eats rabbits but is eaten by wolves, the object Species can be used.
+The objects Prey and Predator check and correct the given input to allign it to the declared behaviour of the species, in order to help the user. For species not completely preys or predators, e.g. a fox that eats rabbits but is eaten by wolves, the object Species can be used.
 Species can be deleted or added during the execution and the status of the system can be checked as easy as shown below.  
 
 ![config](./images/status_example.png)  
-In the following example, the system with 2 preys and 1 predator has been replicated. The coefficient are shown as a reference:  
-sp1 = Species('Prey 1', [ ], [30,0.09,10000,400])  
-sp2 = Species('Prey 2', [1], [10,0.06,10000,500])  
-sp3 = Species('Predator', [1,1], [20,-0.05,10000,250])  
+In the following example, the system with 2 preys and 1 predator has been replicated. The coefficients are shown as a reference:  
+sp1 = Species('Prey 1', [ ], [30, 0.09, 10000, 400])  
+sp2 = Species('Prey 2', [1], [10, 0.06, 10000, 500])  
+sp3 = Species('Predator', [1,1], [20, -0.05, 10000, 250])  
 
 Integration has been made up to time=500 with the command:  
 sp1.solve(500)
 
 ![config](./images/LV_2Prey1Pred.png)  
   
-  
-:rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf: :rabbit: :wolf:
-
-
-
-
-
-
-
-
-
-
-

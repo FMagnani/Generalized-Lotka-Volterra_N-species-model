@@ -336,9 +336,10 @@ class Species(Ecosystem):
             The new value of the coefficient.
         """
         
-        for key in Ecosystem.intMatrix.keys():
-            if (self.name in key) and (other_species in key):
-                Ecosystem.intMatrix[key] = new_coeff
+        if not ( (self.name, other_species) in Ecosystem.intMatrix.keys() ):
+            raise TypeError("""Species not found.""")
+        Ecosystem.intMatrix[(self.name, other_species)] = new_coeff
+        Ecosystem.intMatrix[(other_species, self.name)] = -new_coeff        
         
     def set_par(self, which, new_par):
         """
@@ -389,10 +390,6 @@ class Prey(Species):
             logging.warning("Sign of pars[2] has been changed. It should be positive. See documentation of class 'Species' for further explanations.")
             pars[2] *= -1
                 
-        for i in range(len(interactions)):
-            if (interactions[i] > 0):
-                logging.warning("Interaction sign changed. All interactions should be eithr negative or zero for preys.")
-                interactions[i] *= -1    
                 
         super().__init__(name, interactions, pars)
 
@@ -443,11 +440,7 @@ class Predator(Species):
         
         if (pars[2] == 0):
             raise ValueError("pars[2] must be different from zero. See documentation of class 'Species' for further explanations.")
-                
-        for i in range(len(interactions)):
-            if (interactions[i] < 0):
-                logging.warning("Interaction sign changed. All interactions should be eithr positive or zero for predators.")
-                interactions[i] *= -1    
+
                 
         super().__init__(name, interactions, pars)
 

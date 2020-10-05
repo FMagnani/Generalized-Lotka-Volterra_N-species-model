@@ -7,7 +7,6 @@ Created on Sat Sep 26 14:24:50 2020
 """
 
 import system
-import systemDynamicGenerator
 from hypothesis import strategies as st
 from hypothesis import given
 
@@ -104,7 +103,7 @@ def test_PreyPredatorInput():
     """
     
     pred = system.Species('wolf', [], [])
-    prey = system.Prey('rabbit', [5], [1,-1,-1,-1])
+    prey = system.Prey('rabbit', [-5], [1,-1,-1,-1])
     
     assert system.Ecosystem.intMatrix == { ('rabbit', 'wolf') : -5 }
     assert prey.pars == {'rabbit' : [1,1,1,1]}
@@ -115,6 +114,7 @@ def test_PreyPredatorInput():
     
     assert system.Ecosystem.intMatrix == { ('wolf', 'rabbit') : 0 }
     assert pred.pars == {'wolf' : [1,-1,-1,1]}
+    
 
 
 def test_createData():
@@ -140,11 +140,22 @@ def test_createData():
     assert data[6][1][1] == 2
     
     
+def test_interactionSetter():
+    """
+    Test if the interaction matrix remains antysimmetric and if the 
+    coefficients are set with the correct sign.    
+    """
 
-#%%
-
-
-
+    sp1 = system.Prey('rabbit', [], [1,1,1,1])
+    sp2 = system.Predator('wolf', [1], [1,-1,1,1])
+    
+    assert sp1.intMatrix[('wolf','rabbit')] == 1
+    
+    sp1.set_interaction('wolf', -10)
+    
+    data = system.Ecosystem.create_data()
+    assert data[6][0][1] == -data[6][1][0]   
+    assert data[6][0][1] == -10
 
 
 

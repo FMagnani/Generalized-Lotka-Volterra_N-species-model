@@ -6,7 +6,7 @@ Created on Sat Sep 26 14:24:50 2020
 @author: FMagnani
 """
 
-import system
+import LVsystem
 from hypothesis import strategies as st
 from hypothesis import given
 
@@ -17,8 +17,8 @@ def test_speciesCreation():
     Create two Species and check that Ecosystem is correctly updated.
     """
     
-    sp1 = system.Species('A', [], [])
-    sp2 = system.Species('B', [2], [])
+    sp1 = LVsystem.Species('A', [], [])
+    sp2 = LVsystem.Species('B', [2], [])
     
     assert len(sp1.species_list) == len(sp2.species_list)
     assert len(sp1.species_list) == 2
@@ -30,43 +30,43 @@ def test_classVsInstanceInformation():
     Are the updates visible to all the instances?
     """
 
-    sp1 = system.Species('A', [], [])
-    sp2 = system.Species('B', [10], [])
+    sp1 = LVsystem.Species('A', [], [])
+    sp2 = LVsystem.Species('B', [10], [])
     
-    assert len(sp1.species_list) == len(system.Ecosystem.species_list)
-    assert len(system.Ecosystem.species_list) == 2
-    assert system.Ecosystem.species_list == ['A','B']
-    assert system.Ecosystem.intMatrix == {('B','A'):10}
+    assert len(sp1.species_list) == len(LVsystem.Ecosystem.species_list)
+    assert len(LVsystem.Ecosystem.species_list) == 2
+    assert LVsystem.Ecosystem.species_list == ['A','B']
+    assert LVsystem.Ecosystem.intMatrix == {('B','A'):10}
 
 def test_speciesDestruction():    
     """
     Create and destroy two species and check that at every step the Ecosystem
     is correctly updated.
     """
-    sp1 = system.Species('A', [], [])
-    sp2 = system.Species('B', [], [])
-    sp3 = system.Species('C', [], [])
+    sp1 = LVsystem.Species('A', [], [])
+    sp2 = LVsystem.Species('B', [], [])
+    sp3 = LVsystem.Species('C', [], [])
 
     del sp1
     
-    assert len(sp2.species_list) == len(system.Ecosystem.species_list)
-    assert len(system.Ecosystem.species_list) == 2
-    assert not ('A' in system.Ecosystem.species_list)
-    for key in system.Ecosystem.intMatrix:
+    assert len(sp2.species_list) == len(LVsystem.Ecosystem.species_list)
+    assert len(LVsystem.Ecosystem.species_list) == 2
+    assert not ('A' in LVsystem.Ecosystem.species_list)
+    for key in LVsystem.Ecosystem.intMatrix:
         assert not ('A' in key)
     
     del sp2
     
-    assert system.Ecosystem.intMatrix == {}
-    assert system.Ecosystem.species_list == ['C']
-    for key in system.Ecosystem.intMatrix:
+    assert LVsystem.Ecosystem.intMatrix == {}
+    assert LVsystem.Ecosystem.species_list == ['C']
+    for key in LVsystem.Ecosystem.intMatrix:
         assert not ('B' in key)
     
     del sp3
     
-    assert system.Ecosystem.intMatrix == {}
-    assert system.Ecosystem.species_list == []
-    for key in system.Ecosystem.intMatrix:
+    assert LVsystem.Ecosystem.intMatrix == {}
+    assert LVsystem.Ecosystem.species_list == []
+    for key in LVsystem.Ecosystem.intMatrix:
         assert not ('C' in key)
     
 def test_SpeciesPars():
@@ -76,11 +76,11 @@ def test_SpeciesPars():
     """
     
     default = []
-    for i in range(system.SPECIES_PARS):
+    for i in range(LVsystem.SPECIES_PARS):
         default.append(0.5)
     
-    sp1 = system.Species('A', [], [])
-    sp2 = system.Species('AA', [], [])
+    sp1 = LVsystem.Species('A', [], [])
+    sp2 = LVsystem.Species('AA', [], [])
     
     assert sp1.species_pars == sp2.species_pars
     assert len(sp1.species_pars.keys()) == 2
@@ -93,7 +93,7 @@ def test_SpeciesPars():
     
     del sp2
     
-    assert system.Ecosystem.species_pars == {}
+    assert LVsystem.Ecosystem.species_pars == {}
 
 
 
@@ -102,17 +102,17 @@ def test_PreyPredatorInput():
     Test if the classes Prey and Predators correctly changes the given input.
     """
     
-    pred = system.Species('wolf', [], [])
-    prey = system.Prey('rabbit', [-5], [1,-1,-1,-1])
+    pred = LVsystem.Species('wolf', [], [])
+    prey = LVsystem.Prey('rabbit', [-5], [1,-1,-1,-1])
     
-    assert system.Ecosystem.intMatrix == { ('rabbit', 'wolf') : -5 }
+    assert LVsystem.Ecosystem.intMatrix == { ('rabbit', 'wolf') : -5 }
     assert prey.pars == {'rabbit' : [1,1,1,1]}
 
     del pred
     
-    pred = system.Predator('wolf', [0], [1,1,-1,-1])
+    pred = LVsystem.Predator('wolf', [0], [1,1,-1,-1])
     
-    assert system.Ecosystem.intMatrix == { ('wolf', 'rabbit') : 0 }
+    assert LVsystem.Ecosystem.intMatrix == { ('wolf', 'rabbit') : 0 }
     assert pred.pars == {'wolf' : [1,-1,-1,1]}
     
 
@@ -123,11 +123,11 @@ def test_createData():
     the data stored.
     """
 
-    pred1 = system.Predator('wolf', [], [1,-1,1,1])
-    prey1 = system.Prey('rabbit', [-2], [2,2,2,2])
-    pred2 = system.Predator('fox', [0,3], [3,-3,3,3])
+    pred1 = LVsystem.Predator('wolf', [], [1,-1,1,1])
+    prey1 = LVsystem.Prey('rabbit', [-2], [2,2,2,2])
+    pred2 = LVsystem.Predator('fox', [0,3], [3,-3,3,3])
     
-    data = system.Ecosystem.create_data()
+    data = LVsystem.Ecosystem.create_data()
         
     assert data[0] == 3
     assert data[1] == ['wolf', 'rabbit', 'fox']
@@ -146,14 +146,14 @@ def test_interactionSetter():
     coefficients are set with the correct sign.    
     """
 
-    sp1 = system.Prey('rabbit', [], [1,1,1,1])
-    sp2 = system.Predator('wolf', [1], [1,-1,1,1])
+    sp1 = LVsystem.Prey('rabbit', [], [1,1,1,1])
+    sp2 = LVsystem.Predator('wolf', [1], [1,-1,1,1])
     
     assert sp1.intMatrix[('wolf','rabbit')] == 1
     
     sp1.set_interaction('wolf', -10)
     
-    data = system.Ecosystem.create_data()
+    data = LVsystem.Ecosystem.create_data()
     assert data[6][0][1] == -data[6][1][0]   
     assert data[6][0][1] == -10
 

@@ -11,7 +11,7 @@ GitHub repo: https://github.com/FMagnani/Lotka_Volterra_N_species_model
 def merge_All(N, max_time, t_steps):
 
     """
-    Creates the final string containing the whole code of integartor.py.
+    Creates the string containing the whole code of integartor.py.
     You can see the example of a possible code created in the file
     'Integrator_Example.py', or here:
     https://github.com/FMagnani/Generalized-Lotka-Volterra_N-species-model/tree/master/integrator_example
@@ -78,9 +78,7 @@ def current_system(data):
     for i in range(N):
         sys.append( '    dn'+str(i)+'dt = '+str(k[i])+'*n'+str(i)+' + '+str(A[i][i])
                    +('*n'+str(i))*2+'/'+str(c[i]) )
-        
-    
-        
+               
     for i in range(N):
         for j in range(N)[i:]:
             if not (i==j):
@@ -97,8 +95,8 @@ def current_system(data):
 
 def create_Module(N):
     """
-    It creates the main module of the generated code. It will be add to
-    the 'intro' and 'outro' string by merge_All to complete the script.
+    It creates the main module of the generated code, that depends on
+    the current dimension of the system.
     """
     
     str0 = create_Strings(N)[0]
@@ -122,7 +120,8 @@ def create_Module(N):
 
 def create_Strings(N):
     """
-    Creates the strings needed for the dynamical generation.
+    Creates the strings needed for the dynamical generation. They depends
+    on the current dimension of the system.
     
     Parameters
     ----------
@@ -145,13 +144,13 @@ def create_Strings(N):
                    for odeint.
     
     """
-
+    
     string_vars = ''
     string_args = ''
     string_n = ''
-    string_n0 = ''
     string_dndt = ''
     string_sys = ''
+    string_n0 = ''
     
     for i in range(N):
         string_vars += 'k' + str(i) + ','

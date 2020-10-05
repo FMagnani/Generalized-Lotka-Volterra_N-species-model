@@ -13,6 +13,8 @@ import pandas as pd
 
 def pad_list(list_to_pad, new_length, padding_value):
     """
+    The given list is padded with a chosen value up to the chosen length.
+    
     Parameters
     ----------
     list_to_pad : list
@@ -26,7 +28,7 @@ def pad_list(list_to_pad, new_length, padding_value):
 
     Returns
     -------
-    list of length 'new_length'
+    list
 
     """
         
@@ -48,6 +50,7 @@ def create_dfSetUp(data):
     Parameters
     ----------
     data: Species
+        An instance of the class Species.
     """
     N = len(data.species_list)
     
@@ -69,6 +72,8 @@ def generate_Integrator(N, t_max, t_step):
     Dynamical generation of integrator.py.
     You can see the example of a possible code created in the file
     'Integrator_Example.py', or here:
+    https://github.com/FMagnani/Generalized-Lotka-Volterra_N-species-model/tree/master/integrator_example
+
     
     N: int
         Dimension of the system (number of species)

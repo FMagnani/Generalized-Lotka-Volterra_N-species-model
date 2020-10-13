@@ -235,8 +235,9 @@ class Ecosystem:
         
         sysFunctions.generate_Integrator(N, max_time, t_steps)
         sysFunctions.exe_Integrator()   
+ 
         
-    
+    @staticmethod
     def plot():
         
         data = pd.read_csv('solution.csv')
@@ -253,7 +254,27 @@ class Ecosystem:
         ax.set_facecolor('white')
         ax.legend(loc='best')
  
+ 
+    def removeSpecies(self, name):
         
+        self.species_list.remove(name)
+        
+        self.InitialCond.pop(name)
+        self.GrowthRate.pop(name)
+        self.CarrCap.pop(name)
+        self.ChangeRate.pop(name)
+        
+        # Needed an external key list since it's not possible to remove
+        # elements from a dictionary while iterating over it.
+        
+        key_blacklist =[]
+        for key in self.intMatrix.keys():
+            if (name in key):
+                key_blacklist.append(key)
+        for key in key_blacklist:
+            self.intMatrix.pop(key)
+        
+ 
     
 class Species(Ecosystem):
     """

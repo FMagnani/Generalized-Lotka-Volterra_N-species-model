@@ -7,7 +7,6 @@ Created on Sat Sep 26 09:52:55 2020
 GitHub repo: https://github.com/FMagnani/Lotka_Volterra_N_species_model
 """
 
-import logging
 from numpy import zeros
 import systemDynamicGenerator
 import sysFunctions

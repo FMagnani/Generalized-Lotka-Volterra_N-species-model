@@ -410,6 +410,9 @@ class Ecosystem:
         if (os.path.isfile('setup.csv')):
             os.remove('setup.csv')
 
+        for spec_name in self.species_list:
+            self.removeSpecies(spec_name)
+
         name = 'saved_setups/'+name
         shutil.copy(name, 'setup.csv')
         

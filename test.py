@@ -96,27 +96,6 @@ def test_SpeciesPars():
     assert LVsystem.Ecosystem.species_pars == {}
 
 
-
-def test_PreyPredatorInput():
-    """
-    Test if the classes Prey and Predators correctly changes the given input.
-    """
-    
-    pred = LVsystem.Species('wolf', [], [])
-    prey = LVsystem.Prey('rabbit', [-5], [1,-1,-1,-1])
-    
-    assert LVsystem.Ecosystem.intMatrix == { ('rabbit', 'wolf') : -5 }
-    assert prey.pars == {'rabbit' : [1,1,1,1]}
-
-    del pred
-    
-    pred = LVsystem.Predator('wolf', [0], [1,1,-1,-1])
-    
-    assert LVsystem.Ecosystem.intMatrix == { ('wolf', 'rabbit') : 0 }
-    assert pred.pars == {'wolf' : [1,-1,-1,1]}
-    
-
-
 def test_createData():
     """
     Tests if the method createData of the class Ecosystem returns correctly 
@@ -139,25 +118,6 @@ def test_createData():
     assert data[6][0][0] == 0
     assert data[6][1][1] == 2
     
-    
-def test_interactionSetter():
-    """
-    Test if the interaction matrix remains antysimmetric and if the 
-    coefficients are set with the correct sign.    
-    """
-
-    sp1 = LVsystem.Prey('rabbit', [], [1,1,1,1])
-    sp2 = LVsystem.Predator('wolf', [1], [1,-1,1,1])
-    
-    assert sp1.intMatrix[('wolf','rabbit')] == 1
-    
-    sp1.set_interaction('wolf', -10)
-    
-    data = LVsystem.Ecosystem.create_data()
-    assert data[6][0][1] == -data[6][1][0]   
-    assert data[6][0][1] == -10
-
-
 
 
 

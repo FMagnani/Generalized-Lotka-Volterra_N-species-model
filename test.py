@@ -7,10 +7,6 @@ Created on Sat Sep 26 14:24:50 2020
 """
 
 import LVsystem
-from hypothesis import strategies as st
-from hypothesis import given
-
-
 
 def test_speciesCreation():
     """

@@ -88,8 +88,8 @@ class Ecosystem:
         return (N, self.species_list, n0, k, K, c, A)
         
     
-    @classmethod
-    def dict_into_matrix(cls, k, K, c):
+    
+    def dict_into_matrix(self, k, K, c):
         """
         This method takes the interaction matrix, that is a dict with keys 
         of shape (2,1), without either "diagonal" or "reciprocal" entries.
@@ -112,29 +112,25 @@ class Ecosystem:
         https://github.com/FMagnani/Lotka_Volterra_N_species_model
         """
         
-        N = len(cls.species_list)
+        for key1 in self.species_list:
+            for key2 in self.species_list:
+                if (key1 != key2) and ( (key1,key2) not in self.intMatrix ):
+                    raise KeyError("The interaction of "+key1+" with respect to "+key2+" is missing.")            
         
-        to_add = {}
-
-        # Not diagonal entries 
-        for key in Ecosystem.intMatrix:
-            if not (key[0] == key[1]):
-                to_add.update({(key[1], key[0]) : - Ecosystem.intMatrix[key]})
+        N = len(self.species_list)
         
-        cls.intMatrix.update(to_add)
-     
         # Diagonal entries
-        for i, key in zip(range(N), cls.species_list):
+        for i, key in zip(range(N), self.species_list):
             
             aii = int(k[i]>0)*k[i]*c[i]/K[i]
             
-            cls.intMatrix.update({(key,key):aii})
+            self.intMatrix.update({(key,key):aii})
                 
         A = zeros((N,N))
         
-        for I, i in zip( cls.species_list, range(N) ):
-            for J, j in zip( cls.species_list, range(N) ):     
-                A[i][j] = cls.intMatrix[(I,J)]
+        for I, i in zip( self.species_list, range(N) ):
+            for J, j in zip( self.species_list, range(N) ):     
+                A[i][j] = self.intMatrix[(I,J)]
     
         return A
     

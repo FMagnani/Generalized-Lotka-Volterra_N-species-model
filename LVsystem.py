@@ -145,6 +145,32 @@ class Ecosystem:
         return A
     
 
+    def load_from_setup(self):
+        
+        data =pd.read_csv("setup.csv")
+        
+        N = len(list(data['Species']))
+        
+        for i in range(N):
+            name = list(data['Species'])[i]
+            n0 = list(data['Initial cond'])[i]
+            k = list(data['Growth rate'])[i]
+            K = list(data['Carrying cap'])[i]
+            c = list(data['Change rate'])[i]
+            
+            interactions = list(data['A_row'+str(i)])
+        
+            self.addSpecies(name)
+            self.setInitialCond(name, n0)
+            self.setGrowthRate(name, k)
+            self.setCarrCap(name, K)
+            self.setChangeRate(name, c)
+            
+            for j in range(N):
+                if not (i==j):
+                    self.setInteraction(name, list(data['Species'])[j], interactions[j])
+
+
     def addSpecies(self, name):
        
         if (name in self.species_list):
@@ -276,26 +302,48 @@ class Ecosystem:
         for key in key_blacklist:
             self.intMatrix.pop(key)
         
- 
-    def saveSetup(name = datetime.now.strftime("setup_%d-%m-%Y-%H:%M:%S")):
+    @staticmethod
+    def saveSetup(name = ''):
         
-        path = "/saved_setups/"
-        os.rename('setup.csv', path+name)
+        if not (os.path.isfile('setup.csv')):
+            raise OSError("The system must be solved in order to create the setup and solution files.")
+        
+        else:
+            if (name == ''):
+                name = datetime.now().strftime("setup_%d-%m-%Y-%H:%M:%S")
+        
+            path = "saved_setups/"
+            os.rename('setup.csv', path+name)
 
-    def saveSolution(name = datetime.now.strftime("solution_%d-%m-%Y-%H:%M:%S")):
+    @staticmethod
+    def saveSolution(name = ''):
         
-        path = "/saved_solutions/"
-        os.rename('solution.csv', path+name)
+        if not (os.path.isfile('solution.csv')):
+            raise OSError("The system must be solved in order to create the setup and solution files.")
+        
+        else:       
+            if (name == ''):
+                name = datetime.now().strftime("solution_%d-%m-%Y-%H:%M:%S")
+                
+            path = "saved_solutions/"
+            os.rename('solution.csv', path+name)
     
-    def loadSetup(name):
+    def loadSetup(self, name):
         
-        os.remove('setup.csv')
+        if (os.path.isfile('setup.csv')):
+            os.remove('setup.csv')
+
         name = 'saved_setups/'+name
         shutil.copy(name, 'setup.csv')
+        
+        self.load_from_setup()
 
+    @staticmethod
     def loadSolution(name):
         
-        os.remove('solution.csv')
+        if (os.path.isfile('solution.csv')):
+            os.remove('solution.csv')
+
         name = 'saved_solutions/'+name
         shutil.copy(name, 'solution.csv')
     

@@ -234,7 +234,26 @@ class Ecosystem:
         df.to_csv(r'setup.csv', index=True, header=True)
         
         sysFunctions.generate_Integrator(N, max_time, t_steps)
-        sysFunctions.exe_Integrator()          
+        sysFunctions.exe_Integrator()   
+        
+    
+    def plot():
+        
+        data = pd.read_csv('solution.csv')
+
+        Species_names = list(data.columns[1:])
+        N = len(Species_names)
+        t = list(data['Unnamed: 0'])
+
+        fig, ax = plt.subplots()
+        for i, name in zip(range(N), Species_names):
+            nt = list(data[name])
+            ax.plot(t, nt, linewidth=4, label=name)
+
+        ax.set_facecolor('white')
+        ax.legend(loc='best')
+ 
+        
     
 class Species(Ecosystem):
     """

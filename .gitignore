@@ -1,4 +1,8 @@
-gitignore
+.gitignore
+
+#Saved setups and solutions
+saved_setups/
+saved_solutions/
 
 #Temp files
 integrator.py

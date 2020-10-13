@@ -257,12 +257,19 @@ class Ecosystem:
  
     def removeSpecies(self, name):
         
-        self.species_list.remove(name)
+        if not ( name in self.species_list ):
+            raise TypeError("""Species not found.""")
         
-        self.InitialCond.pop(name)
-        self.GrowthRate.pop(name)
-        self.CarrCap.pop(name)
-        self.ChangeRate.pop(name)
+        self.species_list.remove(name)
+   
+        if name in self.InitialCond.keys():
+            self.InitialCond.pop(name)
+        if name in self.GrowthRate.keys():
+            self.GrowthRate.pop(name)
+        if name in self.CarrCap.keys():
+            self.CarrCap.pop(name)
+        if name in self.ChangeRate.keys():
+            self.ChangeRate.pop(name)
         
         # Needed an external key list since it's not possible to remove
         # elements from a dictionary while iterating over it.

@@ -17,84 +17,58 @@ def test_speciesCreation():
     Create two Species and check that Ecosystem is correctly updated.
     """
     
-    sp1 = LVsystem.Species('A', [], [])
-    sp2 = LVsystem.Species('B', [2], [])
+    sys = LVsystem.Ecosystem()
+    sys.addSpecies('rabbit')
+    sys.addSpecies('fox')
+    sys.setInteraction('rabbit', 'fox', -1)
+    sys.setInteraction('fox', 'rabbit',  1)
+    sys.setInitialCond('rabbit', 10)
+    sys.setInitialCond('fox', 5)
+    sys.setGrowthRate('rabbit', 1)
+    sys.setGrowthRate('fox', -1)
+    sys.setCarrCap('rabbit', 10000)
+    sys.setCarrCap('fox', 10000)
+    sys.setChangeRate('rabbit', 10)
+    sys.setChangeRate('fox', 20)        
     
-    assert len(sp1.species_list) == len(sp2.species_list)
-    assert len(sp1.species_list) == 2
-    assert sp2.species_list == ['A','B']
-    assert sp1.intMatrix == {('B','A'):2}
+    assert len(sys.species_list) == 2
+    assert sys.species_list == ['rabbit','fox']
+    assert sys.intMatrix == {('rabbit','fox'):-1, ('fox','rabbit'):1}
 
-def test_classVsInstanceInformation():
-    """
-    Are the updates visible to all the instances?
-    """
+    sys.removeSpecies('rabbit')
+    sys.removeSpecies('fox')
 
-    sp1 = LVsystem.Species('A', [], [])
-    sp2 = LVsystem.Species('B', [10], [])
-    
-    assert len(sp1.species_list) == len(LVsystem.Ecosystem.species_list)
-    assert len(LVsystem.Ecosystem.species_list) == 2
-    assert LVsystem.Ecosystem.species_list == ['A','B']
-    assert LVsystem.Ecosystem.intMatrix == {('B','A'):10}
 
 def test_speciesDestruction():    
     """
     Create and destroy two species and check that at every step the Ecosystem
     is correctly updated.
     """
-    sp1 = LVsystem.Species('A', [], [])
-    sp2 = LVsystem.Species('B', [], [])
-    sp3 = LVsystem.Species('C', [], [])
-
-    del sp1
+    sys = LVsystem.Ecosystem()
+    sys.addSpecies('rabbit')
+    sys.addSpecies('fox')
+    sys.addSpecies('wolf')
     
-    assert len(sp2.species_list) == len(LVsystem.Ecosystem.species_list)
-    assert len(LVsystem.Ecosystem.species_list) == 2
-    assert not ('A' in LVsystem.Ecosystem.species_list)
-    for key in LVsystem.Ecosystem.intMatrix:
-        assert not ('A' in key)
+    sys.removeSpecies('fox')
     
-    del sp2
+    assert len(sys.species_list) == 2
+    assert not ('fox' in sys.species_list)
+    for key in sys.intMatrix:
+        assert not ('fox' in key)
     
-    assert LVsystem.Ecosystem.intMatrix == {}
-    assert LVsystem.Ecosystem.species_list == ['C']
-    for key in LVsystem.Ecosystem.intMatrix:
-        assert not ('B' in key)
+    sys.removeSpecies('wolf')
     
-    del sp3
+    assert sys.species_list == ['rabbit']
+    for key in sys.intMatrix:
+        assert not ('wolf' in key)
     
-    assert LVsystem.Ecosystem.intMatrix == {}
-    assert LVsystem.Ecosystem.species_list == []
-    for key in LVsystem.Ecosystem.intMatrix:
-        assert not ('C' in key)
+    sys.removeSpecies('rabbit')        
     
-def test_SpeciesPars():
-    """
-    Test if the dictionary species_pars in the Ecosystem class is updated
-    correctly. 
-    """
-    
-    default = []
-    for i in range(LVsystem.SPECIES_PARS):
-        default.append(0.5)
-    
-    sp1 = LVsystem.Species('A', [], [])
-    sp2 = LVsystem.Species('AA', [], [])
-    
-    assert sp1.species_pars == sp2.species_pars
-    assert len(sp1.species_pars.keys()) == 2
-    
-    assert sp1.species_pars == { 'A' : default, 'AA' : default }
-    
-    del sp1
-    
-    assert sp2.species_pars == { 'AA' : default }
-    
-    del sp2
-    
-    assert LVsystem.Ecosystem.species_pars == {}
-
+    assert sys.intMatrix == {}
+    assert sys.species_list == []
+    for key in sys.intMatrix:
+        assert not ('rabbit' in key)
+        
 
 def test_createData():
     """
@@ -102,22 +76,47 @@ def test_createData():
     the data stored.
     """
 
-    pred1 = LVsystem.Predator('wolf', [], [1,-1,1,1])
-    prey1 = LVsystem.Prey('rabbit', [-2], [2,2,2,2])
-    pred2 = LVsystem.Predator('fox', [0,3], [3,-3,3,3])
+    sys = LVsystem.Ecosystem()
+
+    sys.addSpecies('rabbit')
+    sys.setInteraction('rabbit', 'hen', 0)
+    sys.setInteraction('rabbit', 'fox', -1)
+    sys.setInitialCond('rabbit', 30)
+    sys.setGrowthRate('rabbit', 0.09)
+    sys.setCarrCap('rabbit', 10000)
+    sys.setChangeRate('rabbit', 400)
+
+    sys.addSpecies('hen')
+    sys.setInteraction('hen', 'rabbit', 0)
+    sys.setInteraction('hen', 'fox', -1)
+    sys.setInitialCond('hen', 10)
+    sys.setGrowthRate('hen', 0.06)
+    sys.setCarrCap('hen', 10000)
+    sys.setChangeRate('hen', 500)
+
+    sys.addSpecies('fox')
+    sys.setInteraction('fox', 'rabbit', 1)
+    sys.setInteraction('fox', 'hen', 1)
+    sys.setInitialCond('fox', 20)
+    sys.setGrowthRate('fox', -0.05)
+    sys.setCarrCap('fox', 1)
+    sys.setChangeRate('fox', 250)
+
     
-    data = LVsystem.Ecosystem.create_data()
+    data = sys.create_data()
         
     assert data[0] == 3
-    assert data[1] == ['wolf', 'rabbit', 'fox']
-    assert data[2] == [1,2,3]
-    assert data[3] == [-1,2,-3]    
-    assert data[4] == [1,2,3]
-    assert data[5] == [1,2,3]
+    assert data[1] == ['rabbit', 'hen', 'fox']
+    assert data[2] == [30,10,20]
+    assert data[3] == [0.09,0.06,-0.05]    
+    assert data[4] == [10000,10000,1]
+    assert data[5] == [400,500,250]
     assert data[6][1][2] == -data[6][2][1]
-    assert data[6][0][0] == 0
-    assert data[6][1][1] == 2
+    assert data[6][2][2] == 0
     
+    sys.removeSpecies('rabbit')
+    sys.removeSpecies('fox')
+    sys.removeSpecies('hen')
 
 
 

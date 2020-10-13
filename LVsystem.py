@@ -13,10 +13,7 @@ import systemDynamicGenerator
 import sysFunctions
 import pandas as pd
 import matplotlib.pyplot as plt
-
-
-SPECIES_PARS = 4
-
+import os
 
 
 class Ecosystem:
@@ -54,9 +51,6 @@ class Ecosystem:
     CarrCap = {}
     ChangeRate = {}
   
-    species_pars = {}
-    
-    
     def create_data(self):
         """
         Organizes the data in a single tuple.        
@@ -197,21 +191,21 @@ class Ecosystem:
     
     def status(self, name=''):
         if not (name == ''):
-            print(name +
-                  "\nInitial condition: "+ self.InitialCond[name] + 
-                  "\nGrowth rate: "+ self.GrowthRate[name] +     
-                  "\nCarrying capacity: "+ self.GrowthRate[name] +         
-                  "\nChange rate: "+ self.ChangeRate[name] + 
-                  "\n\nInteractions: ")
+            print("\nSpecies name: ", name)
+            print("\nInitial condition: ", self.InitialCond[name]) 
+            print("Growth rate: ", self.GrowthRate[name])
+            print("Carrying capacity: ", self.GrowthRate[name])
+            print("Change rate: ", self.ChangeRate[name])
+            print("\nInteractions: ")
             for key in self.intMatrix.keys():
                 if (name in key):
-                    print(key+self.intMatrix[key]+'\n')
+                    print(key, ": ", self.intMatrix[key])
             print('\n')
         
         else:
-            print('\nCurrent species in the system:\n')
+            print('\nCurrent species in the system:')
             print(self.species_list)
-            print('\nCurrent interactions between species:\n')
+            print('\nCurrent interactions between species:')
             print(self.create_data()[6])
             print('\n\nCurrent ODE system:\n')
             print(systemDynamicGenerator.current_system(self))
@@ -282,6 +276,13 @@ class Ecosystem:
             self.intMatrix.pop(key)
         
  
+    def saveSetup(name = 'setup'):
+        
+        
+        
+        os.rename('setup.csv', pathnName)
+
+
     
 class Species(Ecosystem):
     """

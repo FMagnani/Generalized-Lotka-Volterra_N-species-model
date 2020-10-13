@@ -122,6 +122,16 @@ class Ecosystem:
                 if (key1 != key2) and ( (key1,key2) not in self.intMatrix ):
                     raise KeyError("The interaction of "+key1+" with respect to "+key2+" is missing.")            
         
+        for key in self.species_list:
+            if not (key in self.InitialCond.keys()):
+                raise KeyError("Missing initial condition for "+key+".")                
+            if not (key in self.GrowthRate.keys()):
+                raise KeyError("Missing growth rate for "+key+".")
+            if not (key in self.CarrCap.keys()):
+                raise KeyError("Missing carrying capacity for "+key+".")
+            if not (key in self.ChangeRate.keys()):
+                raise KeyError("Missing change rate for "+key+".")
+        
         N = len(self.species_list)
         
         # Diagonal entries
@@ -169,15 +179,13 @@ class Ecosystem:
             raise TypeError("""Species not found.""")
         
         self.GrowthRate.update({name:value})
-        
-    
+            
     def setCarrCap(self, name, value):
         
         if not ( (name) in self.species_list ):
             raise TypeError("""Species not found.""")
         
-        self.CarrCap.update({name:value})
-    
+        self.CarrCap.update({name:value})    
 
     def setChangeRate(self, name, value):
         
@@ -186,7 +194,30 @@ class Ecosystem:
         
         self.ChangeRate.update({name:value})
     
+    
+    def status(self, name=''):
+        if not (name == ''):
+            print(name +
+                  "\nInitial condition: "+ self.InitialCond[name] + 
+                  "\nGrowth rate: "+ self.GrowthRate[name] +     
+                  "\nCarrying capacity: "+ self.GrowthRate[name] +         
+                  "\nChange rate: "+ self.ChangeRate[name] + 
+                  "\n\nInteractions: ")
+            for key in self.intMatrix.keys():
+                if (name in key):
+                    print(key+self.intMatrix[key]+'\n')
+            print('\n')
+        
+        else:
+            print('\nCurrent species in the system:\n')
+            print(self.species_list)
+            print('\nCurrent interactions between species:\n')
+            print(self.create_data()[6])
+            print('\n\nCurrent ODE system:\n')
+            print(systemDynamicGenerator.current_system(self))
+            print('\n')
 
+                
     
 class Species(Ecosystem):
     """

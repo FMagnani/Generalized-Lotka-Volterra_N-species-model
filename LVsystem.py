@@ -302,31 +302,27 @@ class Ecosystem:
         for key in key_blacklist:
             self.intMatrix.pop(key)
         
-    @staticmethod
-    def saveSetup(name = ''):
+    
+    def saveSetup(self, name = ''):
         
-        if not (os.path.isfile('setup.csv')):
-            raise OSError("The system must be solved in order to create the setup and solution files.")
+        df = sysFunctions.create_dfSetUp(self)
+        df.to_csv(r'setup.csv', index=True, header=True)
         
-        else:
-            if (name == ''):
-                name = datetime.now().strftime("setup_%d-%m-%Y-%H:%M:%S")
+        if (name == ''):
+            name = datetime.now().strftime("setup_%d-%m-%Y-%H:%M:%S")
         
-            path = "saved_setups/"
-            os.rename('setup.csv', path+name)
+        path = "saved_setups/"
+        os.rename('setup.csv', path+name)
 
-    @staticmethod
-    def saveSolution(name = ''):
+    def saveSolution(self, name = ''):
         
-        if not (os.path.isfile('solution.csv')):
-            raise OSError("The system must be solved in order to create the setup and solution files.")
+        self.solve()
         
-        else:       
-            if (name == ''):
-                name = datetime.now().strftime("solution_%d-%m-%Y-%H:%M:%S")
+        if (name == ''):
+            name = datetime.now().strftime("solution_%d-%m-%Y-%H:%M:%S")
                 
-            path = "saved_solutions/"
-            os.rename('solution.csv', path+name)
+        path = "saved_solutions/"
+        os.rename('solution.csv', path+name)
     
     def loadSetup(self, name):
         
@@ -337,16 +333,6 @@ class Ecosystem:
         shutil.copy(name, 'setup.csv')
         
         self.load_from_setup()
-
-    @staticmethod
-    def loadSolution(name):
-        
-        if (os.path.isfile('solution.csv')):
-            os.remove('solution.csv')
-
-        name = 'saved_solutions/'+name
-        shutil.copy(name, 'solution.csv')
-    
     
     
 class Species(Ecosystem):

@@ -40,10 +40,10 @@ data =pd.read_csv("setup.csv")
 t = np.linspace(0,"""+ max_time +','+ t_steps +""")
 
 names = list(data['Species'])
-n0 = list(data['n0'])
-k = list(data['k'])
-K = list(data['K'])
-c = list(data['c'])
+n0 = list(data['Initial cond'])
+k = list(data['Growth rate'])
+K = list(data['Carrying cap'])
+c = list(data['Change rate'])
 N = len(k)
 A = []
 for i in (range(N)):\n    A.append( list(data['A_row'+str(i)]) )"""

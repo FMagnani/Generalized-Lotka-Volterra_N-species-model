@@ -56,7 +56,7 @@ def create_dfSetUp(data):
     
     df = pd.DataFrame()
 
-    col_names = ['Species','n0','k','K','c']
+    col_names = ['Species','Initial cond','Growth rate','Carrying cap','Change rate']
     for i in range(5):
         df[col_names[i]] = data.create_data()[i+1]
 

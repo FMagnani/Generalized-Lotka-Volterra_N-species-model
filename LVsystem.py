@@ -83,10 +83,10 @@ class Ecosystem:
         K = []
         c = []
         for key in self.species_list:
-            n0.append(self.species_pars[key][0])
-            k.append(self.species_pars[key][1])
-            K.append(self.species_pars[key][2])
-            c.append(self.species_pars[key][3])
+            n0.append(self.InitialCond[key])
+            k.append(self.GrowthRate[key])
+            K.append(self.CarrCap[key])
+            c.append(self.ChangeRate[key])
         
         A = self.dict_into_matrix(k, K, c)
         
@@ -217,7 +217,24 @@ class Ecosystem:
             print(systemDynamicGenerator.current_system(self))
             print('\n')
 
-                
+     
+    def solve(self, max_time=20, t_steps=2**7+1):
+        """
+         Parameters
+         ----------
+         max_time : float
+             Maximum time reached in the integration.
+         t_steps : int
+             Number of steps in which the time is divided.
+             In the form 2**n +1 performance is increased.
+        """
+        N = len(self.species_list)
+     
+        df = sysFunctions.create_dfSetUp(self)
+        df.to_csv(r'setup.csv', index=True, header=True)
+        
+        sysFunctions.generate_Integrator(N, max_time, t_steps)
+        sysFunctions.exe_Integrator()          
     
 class Species(Ecosystem):
     """

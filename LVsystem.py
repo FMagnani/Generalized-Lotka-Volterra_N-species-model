@@ -21,26 +21,27 @@ class Ecosystem:
     """
     Ecosystem()
     
-    This class is used to store and manage the information about the whole
-    system of interacting species. Such information is the list of all the 
-    species, their parameters and the matrix of their binary interactions.
-    Whenever a new species is created or deleted, all these are updated. 
+    This class is used to store and manage the information about the
+    system. 
     
-        Attributes:
-    species_list: (list) list of the names of the species currently in
-        the system. The order is the same in which they have been added.
-    intMatrix: (dict) It's the matrix that stores the binary interactions
-        between the species. It's a dictionary whose keys are tuple with
-        the couple of species' name.
-    species_pars: (dict) Dictionary that associates to a species' name all 
-        its parameters.
+    Methods
+    -------
+    addSpecies(name)
+    removeSpecies(name)
+    setInteraction(name1, name2, value)
+    setInitialCond(name, value)
+    setGrowthRate(name, value)
+    setCarrCap(name, value)
+    setChangeRate(name, value)
+    status(name = '')
+    solve(max_time=20, t_steps=129)
+    plot()
+    saveSetup(name = '')
+    saveSolution(name = '')
+    loadSetup(name)
     
-    All these data structures are updated by the method __init__ of the 
-    class Species.
+    Further information are given by the documentation of each method.
     
-    ..note:: This class is not supposed to create instances, but to store
-             and manage the information about the system. 
- 
     """
     
     species_list = []
@@ -91,25 +92,11 @@ class Ecosystem:
     
     def dict_into_matrix(self, k, K, c):
         """
-        This method takes the interaction matrix, that is a dict with keys 
-        of shape (2,1), without either "diagonal" or "reciprocal" entries.
-        "No diagonal entries" means the absence of keys = ('Name','Name').
-        "No reciprocal entries" means that if ('Name1','Name2') is present,
-        ('Name2','Name1') is absent.
-        Then the dictionary is converted into the square antysimmetric matrix
-        needed by the system.
+        This method converts the intMatrix, that is a dictionary,
+        into a square matrix.
         Parameters k, K, c are needed in order to compute the diagonal 
         values.
-
-        Returns
-        -------
-        A square antisymmetric matrix, with diagonal entries obtained 
-        with the formula:
-            
-            aii = int(ki>0)*(ci ki)/Ki 
-            
-        See the documentation for further informations at
-        https://github.com/FMagnani/Lotka_Volterra_N_species_model
+        
         """
         
         for key1 in self.species_list:
@@ -146,6 +133,10 @@ class Ecosystem:
     
 
     def load_from_setup(self):
+        """
+        This method initializes the system with the data stored in the
+        setup file currently present in the directory.
+        """
         
         data =pd.read_csv("setup.csv")
         
@@ -172,6 +163,12 @@ class Ecosystem:
 
 
     def addSpecies(self, name):
+        """
+        name: string. The species' name.
+        
+        The list of species of the system is updated with this name.
+        
+        """
        
         if (name in self.species_list):
             raise TypeError("""Name already existing. Species must have different names.""")
@@ -180,6 +177,19 @@ class Ecosystem:
  
         
     def setInteraction(self, name1, name2, value):
+        """
+        name1: string. 
+        name2: string.
+        value: float.
+        
+        This method is used to specify the kind of interaction of name1
+        with respect of name2. The interaction matrix is updated with
+        value.
+        
+        A positive value means that name1 eats name2.
+        A negative value means that name1 is eaten by name2.
+        
+        """
         
         if not ( (name1) in self.species_list ):
             raise TypeError("""Species not found.""")
@@ -188,6 +198,14 @@ class Ecosystem:
         
         
     def setInitialCond(self, name, value):
+        """
+        name: string. 
+        value: float.
+        
+        This method sets the initial population of species 'name'
+        equal to 'value'.
+        
+        """
         
         if not ( (name) in self.species_list ):
             raise TypeError("""Species not found.""")
@@ -195,6 +213,14 @@ class Ecosystem:
         self.InitialCond.update({name:value})
         
     def setGrowthRate(self, name, value):
+        """
+        name: string. 
+        value: float.
+        
+        This method sets the growth rate of species 'name'
+        equal to 'value'.
+        
+        """
         
         if not ( (name) in self.species_list ):
             raise TypeError("""Species not found.""")
@@ -202,6 +228,14 @@ class Ecosystem:
         self.GrowthRate.update({name:value})
             
     def setCarrCap(self, name, value):
+        """
+        name: string. 
+        value: float.
+        
+        This method sets the carrying capacity of species 'name'
+        equal to 'value'.
+        
+        """
         
         if not ( (name) in self.species_list ):
             raise TypeError("""Species not found.""")
@@ -209,6 +243,14 @@ class Ecosystem:
         self.CarrCap.update({name:value})    
 
     def setChangeRate(self, name, value):
+        """
+        name: string. 
+        value: float.
+        
+        This method sets the change rate of species 'name'
+        equal to 'value'.
+        
+        """
         
         if not ( (name) in self.species_list ):
             raise TypeError("""Species not found.""")
@@ -217,6 +259,16 @@ class Ecosystem:
     
     
     def status(self, name=''):
+        """
+        name: string. 
+        
+        This method prints the status of the system, if no arguments are
+        given.
+        If the name of a species is given, the method prints the current
+        value of its parameters and interactions.
+        
+        """
+        
         if not (name == ''):
             print("\nSpecies name: ", name)
             print("\nInitial condition: ", self.InitialCond[name]) 
@@ -241,13 +293,12 @@ class Ecosystem:
      
     def solve(self, max_time=20, t_steps=2**7+1):
         """
-         Parameters
-         ----------
          max_time : float
              Maximum time reached in the integration.
          t_steps : int
              Number of steps in which the time is divided.
              In the form 2**n +1 performance is increased.
+        
         """
         N = len(self.species_list)
      
@@ -260,7 +311,10 @@ class Ecosystem:
         
     @staticmethod
     def plot():
+        """
+        This method plots the solution contained in the file solution.csv.
         
+        """
         data = pd.read_csv('solution.csv')
 
         Species_names = list(data.columns[1:])
@@ -277,7 +331,14 @@ class Ecosystem:
  
  
     def removeSpecies(self, name):
+        """
+        name: string. 
         
+        This method removes from the system the species 'name' and all
+        its interactions with the other species.
+        
+        """
+                
         if not ( name in self.species_list ):
             raise TypeError("""Species not found.""")
         
@@ -304,7 +365,14 @@ class Ecosystem:
         
     
     def saveSetup(self, name = ''):
+        """
+        name: string.
         
+        The current setup of the system is saved into the folder 
+        'saved_setups'. If 'name' is not given, it will be saved with 
+        the current date and time inside the name.
+        
+        """
         df = sysFunctions.create_dfSetUp(self)
         df.to_csv(r'setup.csv', index=True, header=True)
         
@@ -315,7 +383,14 @@ class Ecosystem:
         os.rename('setup.csv', path+name)
 
     def saveSolution(self, name = ''):
+        """
+        name: string.
         
+        The current solution of the system is saved into the folder 
+        'saved_solutions'. If 'name' is not given, it will be saved with 
+        the current date and time inside the name.
+        
+        """
         self.solve()
         
         if (name == ''):
@@ -325,7 +400,14 @@ class Ecosystem:
         os.rename('solution.csv', path+name)
     
     def loadSetup(self, name):
+        """
+        name: string.
         
+        The system is initialized with the status given by the file 
+        'name', that should be a setup previously saved or already 
+        present in the folder 'saved_setups'.
+        
+        """        
         if (os.path.isfile('setup.csv')):
             os.remove('setup.csv')
 

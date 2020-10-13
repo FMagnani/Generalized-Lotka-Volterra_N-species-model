@@ -134,6 +134,26 @@ class Ecosystem:
     
         return A
     
+
+    def addSpecies(self, name):
+       
+        if (name in self.species_list):
+            raise TypeError("""Name already existing. Species must have different names.""")
+
+        self.species_list.append(name)
+ 
+        
+    def setInteraction(self, name1, name2, value):
+        
+        if not ( (name1) in Ecosystem.species_list ):
+            raise TypeError("""Species not found.""")
+            
+        self.intMatrix[(name1, name2)] = value  
+        
+        
+    
+
+
     
 class Species(Ecosystem):
     """

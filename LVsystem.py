@@ -48,7 +48,12 @@ class Ecosystem:
     species_list = []
     
     intMatrix = {}
-    
+  
+    InitialCond = {}
+    GrowthRate = {}
+    CarrCap = {}
+    ChangeRate = {}
+  
     species_pars = {}
     
     
@@ -145,14 +150,42 @@ class Ecosystem:
         
     def setInteraction(self, name1, name2, value):
         
-        if not ( (name1) in Ecosystem.species_list ):
+        if not ( (name1) in self.species_list ):
             raise TypeError("""Species not found.""")
             
         self.intMatrix[(name1, name2)] = value  
         
         
+    def setInitialCond(self, name, value):
+        
+        if not ( (name) in self.species_list ):
+            raise TypeError("""Species not found.""")
+        
+        self.InitialCond.update({name:value})
+        
+    def setGrowthRate(self, name, value):
+        
+        if not ( (name) in self.species_list ):
+            raise TypeError("""Species not found.""")
+        
+        self.GrowthRate.update({name:value})
+        
+    
+    def setCarrCap(self, name, value):
+        
+        if not ( (name) in self.species_list ):
+            raise TypeError("""Species not found.""")
+        
+        self.CarrCap.update({name:value})
     
 
+    def setChangeRate(self, name, value):
+        
+        if not ( (name) in self.species_list ):
+            raise TypeError("""Species not found.""")
+        
+        self.ChangeRate.update({name:value})
+    
 
     
 class Species(Ecosystem):

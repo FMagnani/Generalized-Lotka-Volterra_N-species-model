@@ -51,8 +51,8 @@ class Ecosystem:
     
     species_pars = {}
     
-    @classmethod
-    def create_data(cls):
+    
+    def create_data(self):
         """
         Organizes the data in a single tuple.        
         
@@ -71,21 +71,21 @@ class Ecosystem:
         species' name.
         """
         
-        N = len(cls.species_list)
+        N = len(self.species_list)
 
         n0 = []
         k = []
         K = []
         c = []
-        for key in cls.species_list:
-            n0.append(cls.species_pars[key][0])
-            k.append(cls.species_pars[key][1])
-            K.append(cls.species_pars[key][2])
-            c.append(cls.species_pars[key][3])
+        for key in self.species_list:
+            n0.append(self.species_pars[key][0])
+            k.append(self.species_pars[key][1])
+            K.append(self.species_pars[key][2])
+            c.append(self.species_pars[key][3])
         
-        A = cls.dict_into_matrix(k, K, c)
+        A = self.dict_into_matrix(k, K, c)
         
-        return (N, cls.species_list, n0, k, K, c, A)
+        return (N, self.species_list, n0, k, K, c, A)
         
     
     @classmethod

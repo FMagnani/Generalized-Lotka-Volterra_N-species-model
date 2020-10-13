@@ -90,7 +90,7 @@ def test_createData():
     sys.setInteraction('hen', 'rabbit', 0)
     sys.setInteraction('hen', 'fox', -1)
     sys.setInitialCond('hen', 10)
-    sys.setGrowthRate('hen', 0.06)
+    sys.setGrowthRate('hen', 0.07)
     sys.setCarrCap('hen', 10000)
     sys.setChangeRate('hen', 500)
 
@@ -98,7 +98,7 @@ def test_createData():
     sys.setInteraction('fox', 'rabbit', 1)
     sys.setInteraction('fox', 'hen', 1)
     sys.setInitialCond('fox', 20)
-    sys.setGrowthRate('fox', -0.05)
+    sys.setGrowthRate('fox', -0.06)
     sys.setCarrCap('fox', 1)
     sys.setChangeRate('fox', 250)
 
@@ -108,7 +108,7 @@ def test_createData():
     assert data[0] == 3
     assert data[1] == ['rabbit', 'hen', 'fox']
     assert data[2] == [30,10,20]
-    assert data[3] == [0.09,0.06,-0.05]    
+    assert data[3] == [0.09,0.07,-0.06]    
     assert data[4] == [10000,10000,1]
     assert data[5] == [400,500,250]
     assert data[6][1][2] == -data[6][2][1]
@@ -119,11 +119,28 @@ def test_createData():
     sys.removeSpecies('hen')
 
 
+def test_loadData():
+    """Loads a known setup and checks if it has been loaded correctly."""
+    
+    sys = LVsystem.Ecosystem()
+    
+    sys.loadSetup('2Prey1Predator')
+    
+    
+    data = sys.create_data()
+    
+    assert data[0] == 3
+    assert data[1] == ['rabbit', 'hen', 'fox']
+    assert data[2] == [30,10,20]
+    assert data[3] == [0.09,0.07,-0.06]    
+    assert data[4] == [10000,10000,1]
+    assert data[5] == [400,500,250]
+    assert data[6][1][2] == -data[6][2][1]
+    assert data[6][2][2] == 0
 
-
-
-
-
+    sys.removeSpecies('rabbit')
+    sys.removeSpecies('fox')
+    sys.removeSpecies('hen')
 
 
 

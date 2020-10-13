@@ -14,7 +14,8 @@ import sysFunctions
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
-
+from datetime import datetime
+import shutil
 
 class Ecosystem:
     """
@@ -276,13 +277,29 @@ class Ecosystem:
             self.intMatrix.pop(key)
         
  
-    def saveSetup(name = 'setup'):
+    def saveSetup(name = datetime.now.strftime("setup_%d-%m-%Y-%H:%M:%S")):
         
-        
-        
-        os.rename('setup.csv', pathnName)
+        path = "/saved_setups/"
+        os.rename('setup.csv', path+name)
 
+    def saveSolution(name = datetime.now.strftime("solution_%d-%m-%Y-%H:%M:%S")):
+        
+        path = "/saved_solutions/"
+        os.rename('solution.csv', path+name)
+    
+    def loadSetup(name):
+        
+        os.remove('setup.csv')
+        name = 'saved_setups/'+name
+        shutil.copy(name, 'setup.csv')
 
+    def loadSolution(name):
+        
+        os.remove('solution.csv')
+        name = 'saved_solutions/'+name
+        shutil.copy(name, 'solution.csv')
+    
+    
     
 class Species(Ecosystem):
     """

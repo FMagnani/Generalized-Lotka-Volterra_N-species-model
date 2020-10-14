@@ -58,82 +58,113 @@ Note that the intraspecific competition term (the quadratic term in x<sub>i</sub
 
 The software is made up of three main modules:  
 ***sysFunctions***, that implements simple functions used in system.  
-***system***, where the objects exploited by the user to set up the system are defined.  
+***LVsystem***, where the objects exploited by the user to set up the system are defined.  
 ***systemDynamicGenerator***, that generates a new module ***integrator*** for the system integration.  
 Thus the dataflow is the following:  
-***system*** ---setup data--->***systemDynamicGenerator***---dynamical generation--->***integrator***--->solution  
+***LVsystem*** ---setup data--->***systemDynamicGenerator***---dynamical generation--->***integrator***--->solution  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|______________________________________________________^  
 
-## Usage examples
+## Usage 
 
-In a typical execution, the file ***system*** is run and the system is set up and solved from the command line.  
-A new species is introduced to the system as an instance of one of the classes Species, Prey or Predator. The syntax is the following:
+The file ***LVsystem*** is run and the system is set up and solved even from command line, through the object **Ecosystem**. It contains all the methods needed in order to set up the system up to an arbitrary number of species, solve it, plot the results and eventually save permanently either the setup or the solution. Previusly saved setups can be loaded into the system as a starting point. Each species is univocally identified with a name.  
+Below the list of all the available methods is shown, with the specification of their arguments and the explanation of their function.  
 
 | **Method**     	| **Parameter**                                                              	| **Function**                                                                                                                                                                                                                                      	|
 |----------------	|----------------------------------------------------------------------------	|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
-| addSpecies     	| name: string                                                               	| The list of species of the system is updated with this name.                                                                                                                                                                                      	|
-| setInteraction 	| name1: string <br>name2: string<br>value: float                            	| This method is used to specify the kind of interaction of name1 with respect of name2. The interaction matrix is updated with value.  <br>A positive value means that name1 eats name2.  <br>A negative value means that name1 is eaten by name2. 	|
-| setInitialCond 	| name: string   <br>value: float                                            	| This method sets the initial population of species 'name' equal to 'value'.                                                                                                                                                                       	|
-| setGrowthRate  	| name: string   <br>value: float                                            	| This method sets the growth rate of species 'name' equal to 'value'.                                                                                                                                                                              	|
-| setCarrCap     	| name: string <br>value: float                                              	| This method sets the carrying capacity of species 'name' equal to 'value'.                                                                                                                                                                        	|
-| setChangeRate  	| name: string <br>value: float                                              	| This method sets the change rate of species 'name' equal to 'value'.                                                                                                                                                                              	|
-| removeSpecies  	| name: string                                                               	| This method removes from the system the species 'name' and all its interactions with the other species.                                                                                                                                           	|
-| status         	| name: string<br>(optional)                                                 	| This method prints the status of the system, if no arguments are given.  <br>If the name of a species is given, the method prints the current value of its parameters and interactions.                                                           	|
-| solve          	| max_time: float  <br>(default: 20)<br><br>t_steps: int  <br>(default: 129) 	| max_time specifies the maximum time reached in the integration.  <br>  <br>t_steps specifies the number of steps in which the time is divided.  <br>In the form 2^n +1 performance is increased.                                                  	|
+| addSpecies     	| *name*: string                                                               	| *Name* is added to the current list of species.                                                                                                                                                                                      	|
+| setInteraction 	| *name1*: string <br>*name2*: string<br>*value*: float                            	| This method is used to specify the kind of interaction of *name1* with respect to *name2*. The interaction matrix is updated with *value*.  <br>A positive *value* means that *name1* eats *name2*.  <br>A negative *value* means that *name1* is eaten by *name2*. 	|
+| setInitialCond 	| *name*: string   <br>*value*: float                                            	| This method sets the initial population of species *name* equal to *value*.                                                                                                                                                                       	|
+| setGrowthRate  	| *name*: string   <br>*value*: float                                            	| This method sets the growth rate of species *name* equal to *value*.                                                                                                                                                                              	|
+| setCarrCap     	| *name*: string <br>*value*: float                                              	| This method sets the carrying capacity of species *name* equal to *value*.                                                                                                                                                                        	|
+| setChangeRate  	| *name*: string <br>*value*: float                                              	| This method sets the change rate of species *name* equal to *value*.                                                                                                                                                                              	|
+| removeSpecies  	| *name*: string                                                               	| This method removes from the system the species *name* and all its interactions with the other species.                                                                                                                                           	|
+| status         	| *name*: string<br>(optional)                                                 	| This method prints the status of the system, if no arguments are given.  <br>If the name of a species is given, the method prints the current value of its parameters and interactions.                                                           	|
+| solve          	| *max_time*: float  <br>(default: 20)<br><br>*t_steps*: int  <br>(default: 129) 	| *max_time* specifies the maximum time reached in the integration.  <br>  <br>*t_steps* specifies the number of steps in which the time is divided.  <br>In the form 2^n +1 performance is increased.                                                  	|
 | plot           	|                                                                            	| This method plots the solution contained in the file solution.csv.                                                                                                                                                                                	|
-| saveSetup      	| name: string<br>(optional)                                                 	| The current setup of the system is saved into the folder 'saved_setups'.  <br>If 'name' is not given, it will be saved with the current date and time inside the name.                                                                            	|
-| saveSolution   	| name: string<br>(optional)                                                 	| The solution of the system is saved into the folder 'saved_solutions'.  <br>If 'name' is not given, it will be saved with the current date and time inside the name.                                                                              	|
-| loadSetup      	| name: string                                                               	| The system is initialized with the status given by the file 'name', that should be a setup previously saved or already present in the folder 'saved_setups'.                                                                                      	|
+| saveSetup      	| *name*: string<br>(optional)                                                 	| The current setup of the system is saved into the folder 'saved_setups'.  <br>If *name* is not given, it will be saved in the format setup_day-month-year-hour:min:sec.                                                                            	|
+| saveSolution   	| *name*: string<br>(optional)                                                 	| The solution of the system is saved into the folder 'saved_solutions'.  <br>If *name* is not given, it will be saved in the format setup_day-month-year-hour:min:sec.                                                                              	|
+| loadSetup      	| *name*: string                                                               	| The system is initialized with the status given by the file *name*, that should be a setup present in the folder 'saved_setups'.                                                                                      	|
+
+### Examples
+
+As a reference, below is shown the code needed to replicate the Prey Predator model.  
+
+    sys = Ecosystem()
+    
+    sys.addSpecies('rabbit')
+    sys.addSpecies('fox')
+
+    sys.setInitialCond('rabbit', 10)
+    sys.setInitialCond('fox', 5)
+    sys.setGrowthRate('rabbit', 1)
+    sys.setGrowthRate('fox', -1)
+    sys.setCarrCap('rabbit', 10000)
+    sys.setCarrCap('fox', 1)
+    sys.setChangeRate('rabbit', 10)
+    sys.setChangeRate('fox', 20)
+
+    sys.setInteraction('rabbit', 'fox', -1)
+    sys.setInteraction('fox', 'rabbit', 1)
+
+    sys.solve()
+    sys.plot()
+
+The result of the code above is a file *setup.csv*, a file *solution.csv*, and the following figure plot on the terminal.
+
+![config](./images/LV_normal.png)
+
+In order to save the setup just built, the following line can be run:  
+
+    sys.saveSetup('PreyPredator')
+
+Let's now see briefly how to load an already saved setup, how to check its status and variables and eventually modify and solve it. We will use the setup *2Prey1Predator*, already present in the folder of saved setups as a reference.  
+
+    sys.loadSetup('2Prey1Predator')
+    sys.status()
+    
+Output:
+
+    Current species in the system:
+    ['rabbit', 'hen', 'fox']
+
+    Current interactions between species:
+    [[ 0.0036  0.     -1.    ]
+     [ 0.      0.0035 -1.    ]
+     [ 1.      1.     -0.    ]]
 
 
+    Current ODE system:
 
-species1 = Species('name', 'interactions', 'parameters')  
-***Name*** (string) is the name of the Species created. It univocally identifies it, so it cannot be the same of an already implemented species.  
-***Interactions*** (list) defines the interaction coefficients of this species with respect to all the others. Thus its length should be equal to the number of species already instanciated (if it's smaller it is padded with zeros, meaning total indifference between the species).  
-The order of the coefficients depends on the order in which the other species have been implemented: if 'Rabbit' has been added first in the system, its interaction list is empty. When 'Fox' is added, his list will be of length 1. If a third species is then implemented, his 'interactions' argument is a list of length 2, with the first number referring to its interaction coefficient with respect to 'Rabbit' and the second number referring to 'Fox'. The current status of the system can always be checked with the method 'status' of any of the species, as shown below.
+    dn0dt = 0.09*n0 + 0.0036*n0*n0/400 + 0.0*n0*n1/400 + -1.0*n0*n2/400
+    dn1dt = 0.07*n1 + 0.0035*n1*n1/500 - 0.0*n1*n0/500 + -1.0*n1*n2/500
+    dn2dt = -0.06*n2 + -0.0*n2*n2/250 - -1.0*n2*n0/250 - -1.0*n2*n1/250
+    
+A deeper inspection for a particular species is possible:  
 
-![config](./images/status_example.png)  
+    sys.status('fox')  
+    
+Output:
 
-***Sign of the interaction***: whenever a species is introduced, the system wil be updated accordingly. In particular, one can imagine that if two species 'A' and 'B' are already present, the introduction of C with interactions = [1,-1] will add to the system the following information:  
-('C','A') : 1  
-('C','B') : -1  
-That should be read as:  
-'C eats A'  
-'C is eaten by B'  
- Thus passing as argument the list of interactions, one should ask himself for interaction i:  
- "Does this species eat species i (in such a case, a positive value should be inserted), or is this species eaten by species i (negative value)?"  
-***Parameters*** (list) is the list of the parameters specific to this species. Length should be equal to 4 (if it's smaller the missing values are set to 0.5).  
-The first value is the initial value for population number, n0. It must be positive.  
-In the equation:  
+    Species name:  fox
 
-![equation5](<http://latex.codecogs.com/svg.latex?&space;\frac{dx_i}{dt}&space;=&space;k_i&space;x&space;(&space;1&space;-&space;\frac{x_i}{K_i}&space;\theta(k_i)&space;)&space;-&space;\frac{1}{c_i}&space;\sum_{i\neq&space;j}&space;a_i_j&space;x_i&space;x_j&space;&space;>)
+    Initial condition:  20
+    Growth rate:  -0.06
+    Carrying capacity:  -0.06
+    Change rate:  250
 
-Parameter 1  = k<sub>i</sub> (Growth/death rate, depending on the sign)  
-Parameter 2 = K<sub>i</sub> (Carrying capacity. It is not used by the equations related to predators, it can be set to any number.)  
-Parameter 3 = c<sub>i</sub> (It must be positive)  
-  
-The objects Prey and Predator need the same arguments as Species, but they check and correct the given input to allign it to the declared behaviour of the species. For example, they can change the sign of a negative growth rate given to a Prey, while logging a warning to the user. For species not completely preys or predators, e.g. a fox that eats rabbits but is eaten by wolves, the object Species can be used.  
+    Interactions: 
+    ('rabbit', 'fox') :  -1.0
+    ('hen', 'fox') :  -1.0
+    ('fox', 'rabbit') :  1.0
+    ('fox', 'hen') :  1.0
+    ('fox', 'fox') :  -0.0
 
-It is possible to remove one species through the command del, for example to change its parameters. In such a case all the remaining species will be updated loosing the interaction coefficients with the removed one. So introducing it again, the input will be different:  
-  
-spec1 = Prey('rabbit', [ ], [10, 1, 10000, 10])&nbsp;&nbsp;&nbsp;&nbsp; # No interaction since this is the only species present  
-spec2 = Predator('fox', [1], [5, -1, 1, 20])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # The interaction of 'fox' with 'rabbit' is positive.  
-del spec1  
-spec1 = Prey('rabbit', [-1], [10, 1, 10000, 10])&nbsp;&nbsp;&nbsp; # The interaction coefficient with 'fox' must be specified again. It's negative this time.  
-  
-The last two methods needed to the user are 'solve' and 'plot'. The first accept the following parameters:  
-***Maximum time*** (float, default=20), that is the maximum time reached in the integration, starting from 0.  
-***Time steps*** (int, default=2^7+1), that are the number of steps in which 'maximum time' is divided. In the form (2^n)+1 performance is increased.  
-An example of a simple execution is the following, replicating the Predator Prey model:  
+If needed, the user can add new species to this setup or modify their parameters and eventually save the new situation. To solve and plot up to a time = 500, the following line are required:
 
-![config](./images/use_example.png)
-  
-In the following example, the system with 2 preys and 1 predator has been replicated.  
-sp1 = Species('Prey 1', [ ], [30, 0.09, 10000, 400])  
-sp2 = Species('Prey 2', [1], [10, 0.06, 10000, 500])  
-sp3 = Species('Predator', [1,1], [20, -0.05, 10000, 250])  
-sp1.solve(500)  
-sp1.plot()  
+    sys.solve(500)  
+    sys.plot()  
+
+Output:
 
 ![config](./images/LV_2Prey1Pred.png)  
   

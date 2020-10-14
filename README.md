@@ -66,7 +66,7 @@ Thus the dataflow is the following:
 
 ## Usage 
 
-The file ***LVsystem*** is run and the system is set up and solved even from command line, through the object **Ecosystem**. It contains all the methods needed in order to set up the system up to an arbitrary number of species, solve it, plot the results and eventually save permanently either the setup or the solution. Previusly saved setups can be loaded into the system as a starting point. Each species is univocally identified with a name.  
+The file ***LVsystem*** is run and the system is set up and solved from command line, through the object **Ecosystem**. It contains all the methods needed in order to set up the system up to an arbitrary number of species, solve it, plot the results and eventually save permanently either the setup or the solution. Previously saved setups can be loaded into the system as a starting point.  
 Below the list of all the available methods is shown, with the specification of their arguments and the explanation of their function.  
 
 | **Method**     	| **Parameter**                                                              	| **Function**                                                                                                                                                                                                                                      	|
@@ -81,8 +81,8 @@ Below the list of all the available methods is shown, with the specification of 
 | status         	| *name*: string<br>(optional)                                                 	| This method prints the status of the system, if no arguments are given.  <br>If the name of a species is given, the method prints the current value of its parameters and interactions.                                                           	|
 | solve          	| *max_time*: float  <br>(default: 20)<br><br>*t_steps*: int  <br>(default: 129) 	| *max_time* specifies the maximum time reached in the integration.  <br>  <br>*t_steps* specifies the number of steps in which the time is divided.  <br>In the form 2^n +1 performance is increased.                                                  	|
 | plot           	|                                                                            	| This method plots the solution contained in the file solution.csv.                                                                                                                                                                                	|
-| saveSetup      	| *name*: string<br>(optional)                                                 	| The current setup of the system is saved into the folder 'saved_setups'.  <br>If *name* is not given, it will be saved in the format setup_day-month-year-hour:min:sec.                                                                            	|
-| saveSolution   	| *name*: string<br>(optional)                                                 	| The solution of the system is saved into the folder 'saved_solutions'.  <br>If *name* is not given, it will be saved in the format setup_day-month-year-hour:min:sec.                                                                              	|
+| saveSetup      	| *name*: string<br>(optional)                                                 	| The current setup of the system is saved into the folder 'saved_setups' with the given name.  <br>If *name* is not given, it will be saved with the name in the format 'setup_*day-month-year-hour:min:sec*'.                                                                            	|
+| saveSolution   	| *name*: string<br>(optional)                                                 	| The solution of the system is saved into the folder 'saved_solutions' with the given name.  <br>If *name* is not given, it will be saved with the name in the format 'setup_*day-month-year-hour:min:sec*'.                                                                              	|
 | loadSetup      	| *name*: string                                                               	| The system is initialized with the status given by the file *name*, that should be a setup present in the folder 'saved_setups'.                                                                                      	|
 
 ### Examples
@@ -113,7 +113,7 @@ The result of the code above is a file *setup.csv*, a file *solution.csv*, and t
 
 ![config](./images/LV_normal.png)
 
-In order to save the setup just built, the following line can be run:  
+In order to save the setup just built with name *PreyPredator*, the following line can be run:  
 
     sys.saveSetup('PreyPredator')
 
@@ -141,23 +141,22 @@ Output:
     
 A deeper inspection for a particular species is possible:  
 
-    sys.status('fox')  
+    sys.status('rabbit')  
     
 Output:
 
-    Species name:  fox
+    Species name:  rabbit
 
-    Initial condition:  20
-    Growth rate:  -0.06
-    Carrying capacity:  -0.06
-    Change rate:  250
+    Initial condition:  30
+    Growth rate:  0.09
+    Carrying capacity:  0.09
+    Change rate:  400
 
     Interactions: 
+    ('rabbit', 'hen') :  0.0
     ('rabbit', 'fox') :  -1.0
-    ('hen', 'fox') :  -1.0
+    ('hen', 'rabbit') :  0.0
     ('fox', 'rabbit') :  1.0
-    ('fox', 'hen') :  1.0
-    ('fox', 'fox') :  -0.0
 
 If needed, the user can add new species to this setup or modify their parameters and eventually save the new situation. To solve and plot up to a time = 500, the following line are required:
 

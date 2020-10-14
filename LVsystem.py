@@ -410,9 +410,15 @@ class Ecosystem:
         if (os.path.isfile('setup.csv')):
             os.remove('setup.csv')
 
-        for spec_name in self.species_list:
+        # Shouldn't iterate on a list that is modified inside the cycle. 
+        # So this external list is needed.
+        species_to_delete = []
+        for i in range(len(self.species_list)):
+            species_to_delete.append(self.species_list[i])
+        
+        for spec_name in species_to_delete:
             self.removeSpecies(spec_name)
-
+           
         name = 'saved_setups/'+name
         shutil.copy(name, 'setup.csv')
         

@@ -378,10 +378,15 @@ class Ecosystem:
         df = sysFunctions.create_dfSetUp(self)
         df.to_csv(r'setup.csv', index=True, header=True)
         
+        path = "saved_setups/"
+        
         if (name == ''):
             name = datetime.now().strftime("setup_%d-%m-%Y-%H:%M:%S")
         
-        path = "saved_setups/"
+        else:
+            if (os.path.isfile(path+name)):
+                raise TypeError("A setup saved with this name is already present!")
+        
         os.rename('setup.csv', path+name)
 
     def saveSolution(self, name = ''):

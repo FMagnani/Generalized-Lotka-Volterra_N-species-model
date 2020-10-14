@@ -272,7 +272,10 @@ class Ecosystem:
             print("\nSpecies name: ", name)
             print("\nInitial condition: ", self.InitialCond[name]) 
             print("Growth rate: ", self.GrowthRate[name])
-            print("Carrying capacity: ", self.GrowthRate[name])
+            if (self.GrowthRate[name]<0):
+                print("Infinite.")
+            else:
+                print("Carrying capacity: ", self.GrowthRate[name])    
             print("Change rate: ", self.ChangeRate[name])
             print("\nInteractions: ")
             for key in self.intMatrix.keys():

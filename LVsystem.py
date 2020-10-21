@@ -393,12 +393,13 @@ class Ecosystem:
         """
         name: string.
         
-        The current solution of the system is saved into the folder 
+        The current solution file of the system is saved into the folder 
         'saved_solutions'. If 'name' is not given, it will be saved with 
         the current date and time inside the name.
         
         """
-        self.solve()
+        if not (os.path.isfile('solution.csv')):
+            raise TypeError("Solution file not present. The system must be solved before.")
         
         if (name == ''):
             name = datetime.now().strftime("solution_%d-%m-%Y-%H:%M:%S")
@@ -418,7 +419,7 @@ class Ecosystem:
         if (os.path.isfile('setup.csv')):
             os.remove('setup.csv')
 
-        # Shouldn't iterate on a list that is modified inside the cycle. 
+        # Shouldn't iterate on a list that is modified inside the cycle itself. 
         # So this external list is needed.
         species_to_delete = []
         for i in range(len(self.species_list)):

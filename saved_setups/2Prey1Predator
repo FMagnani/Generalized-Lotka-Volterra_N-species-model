@@ -1,0 +1,4 @@
+,Species,Initial cond,Growth rate,Carrying cap,Change rate,A_row0,A_row1,A_row2
+0,rabbit,30,0.09,10000,400,0.0036,0.0,1.0
+1,hen,10,0.07,10000,500,0.0,0.0035,1.0
+2,fox,20,-0.06,1,250,-1.0,-1.0,-0.0
